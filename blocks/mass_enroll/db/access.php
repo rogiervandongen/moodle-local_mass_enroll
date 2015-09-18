@@ -15,37 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mentees block caps.
+ * Capability definitions for the mass enrol block plugin.
  *
- * @package    block_mentees
- * @copyright  Mark Nelson <markn@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * For naming conventions, see lib/db/access.php.
+ *
+ * File         access.php
+ * Encoding     UTF-8
+ *
+ * @package     block_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
     'block/mass_enroll:myaddinstance' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
             'user' => CAP_ALLOW
         ),
-
         'clonepermissionsfrom' => 'moodle/my:manageblocks'
     ),
-
     'block/mass_enroll:addinstance' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => array(
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ),
-
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 );

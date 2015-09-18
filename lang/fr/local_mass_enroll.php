@@ -1,4 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Language file for local_mass_enroll, EN
+ *
+ * File         local_mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 $string['pluginname'] = 'Inscriptions massives';
 
 //capabilities name required Moodle 2.3
@@ -8,10 +36,10 @@ $string['mass_enroll:unenrol'] = 'Désinscrire des utilisateurs d\' un cours par
 
 $string['mass_enroll'] = 'Inscriptions massives';
 $string['mass_unenroll'] = 'Désinscriptions massives';
-$string['mass_enroll_info'] =' 
+$string['mass_enroll_info'] ='
 <p>
 Avec cette option vous allez pouvoir inscrire massivement à votre cours une liste d\'utilisateurs existants dans Moodle
-contenue dans un fichier que vous avez préparé, un compte par ligne 
+contenue dans un fichier que vous avez préparé, un compte par ligne
 </p>
 <p>
 <b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
@@ -26,7 +54,7 @@ Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si
 
 $string['mass_unenroll_info'] ='
 <p>
-Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs déja inscrits à ce cours, contenue dans un fichier que vous avez préparé, un compte par ligne 
+Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs déja inscrits à ce cours, contenue dans un fichier que vous avez préparé, un compte par ligne
 </p>
 <p>
 <b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
@@ -88,13 +116,13 @@ $string['im:stats_g'] = '{$a->nb} groupe(s) créé(s) : {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} groupement(s) créé(s) : {$a->what}';
 $string['im:err_opening_file'] = 'ERREUR en ouvrant le fichier {$a}';
 
-$string['mass_enroll_help']=' 
+$string['mass_enroll_help']='
 
 <h1>Inscriptions massives</h1>
 
 <p>
 Avec cette option vous allez pouvoir inscrire massivement à votre cours une liste d\'utilisateurs existants dans Moodle
-contenue dans un fichier que vous avez préparé, un compte par ligne 
+contenue dans un fichier que vous avez préparé, un compte par ligne
 </p>
 <p>
 <b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
@@ -169,7 +197,7 @@ tutu@insa-lyon.fr
 des logins et des groupes (separés içi par une tabulation) :
 
 <pre>
-login        groupe	
+login        groupe
 ppollet      groupe_de_test              sera dans ce groupe
 codet        groupe_de_test              lui aussi
 astorck      autre_groupe                et lui dans l\'autre groupe
@@ -188,12 +216,12 @@ avec l\'annuaire  LDAP de l\'établissement.
 </p>
 ';
 
-$string['mass_unenroll_help'] = ' 
+$string['mass_unenroll_help'] = '
 <h1>Désinscriptions massives</h1>
 
 <p>
 Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs existants dans Moodle
-contenue dans un fichier que vous avez préparé, un compte par ligne. 
+contenue dans un fichier que vous avez préparé, un compte par ligne.
 </p>
 
 <p>
@@ -226,4 +254,3 @@ Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si
 <span <font color=\'red\'>(**) </font></span>: les comptes visés doivent exister dans Moodle et être inscrits à ce cours.
 </p>
 ';
-

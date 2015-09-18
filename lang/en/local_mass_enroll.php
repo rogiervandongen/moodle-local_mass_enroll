@@ -1,4 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Language file for local_mass_enroll, EN
+ *
+ * File         local_mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 $string['pluginname'] = 'Mass enrolments';
 
 //capabilities name required Moodle 2.3
@@ -25,9 +53,9 @@ You may repeat this operation at will without damages, for example if you forgot
 ';
 
 
-$string['mass_unenroll_info'] =' 
+$string['mass_unenroll_info'] ='
 <p>
-With this option you are going to unenrol a list on users from a file with one account per line. 
+With this option you are going to unenrol a list on users from a file with one account per line.
 </p>
 <p>
 <b> The firstline </b> the empty lines or unknown accounts will be skipped. </p>
@@ -94,7 +122,7 @@ $string['im:stats_grp'] = '{$a->nb} grouping(s) created : {$a->what}';
 $string['im:err_opening_file'] = 'error opening file {$a}';
 
 
-$string['mass_enroll_help'] = ' 
+$string['mass_enroll_help'] = '
 <h1>Bulk enrolments</h1>
 
 <p>
@@ -198,7 +226,7 @@ some external directory (LDAP...)
 ';
 
 
-$string['mass_unenroll_help'] = ' 
+$string['mass_unenroll_help'] = '
 <h1>Bulk unenrolments</h1>
 
 <p>

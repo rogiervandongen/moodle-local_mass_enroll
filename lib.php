@@ -1,6 +1,4 @@
 <?php
-
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -19,15 +17,16 @@
 /**
  * Code for handling mass enrolment from a cvs file
  *
-
+ * File         lib.php
+ * Encoding     UTF-8
  *
- * @package local
- * @subpackage mass_enroll
- * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
- * @copyright 2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     local_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas and others {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -60,7 +59,7 @@ function local_mass_enroll_extends_settings_navigation(settings_navigation $navi
     if (empty($CFG->allow_mass_enroll_feature)) {
         return;
     }
-     
+
     if (has_capability('local/mass_enroll:enrol', $context)) {
         $url = new moodle_url('/local/mass_enroll/mass_enroll.php', array('id'=>$context->instanceid));
         $useradmin_node->add(get_string('mass_enroll', 'local_mass_enroll'), $url, navigation_node::TYPE_SETTING, null, 'massenrols', new pix_icon('i/admin', ''));
@@ -69,28 +68,24 @@ function local_mass_enroll_extends_settings_navigation(settings_navigation $navi
         $url = new moodle_url('/local/mass_enroll/mass_unenroll.php', array('id'=>$context->instanceid));
         $useradmin_node->add(get_string('mass_unenroll', 'local_mass_enroll'), $url, navigation_node::TYPE_SETTING, null, 'massunenrols', new pix_icon('i/admin', ''));
     }
-     
+
 
 }
-
-
-
-
 
 /**
  * process the mass enrolment
  * @param csv_import_reader $cir  an import reader created by caller
  * @param Object $course  a course record from table mdl_course
  * @param Object $context  course context instance
- * @param Object $data    data from a moodleform 
- * @return string  log of operations 
+ * @param Object $data    data from a moodleform
+ * @return string  log of operations
  */
 function mass_enroll($cir, $course, $context, $data) {
     global $CFG,$DB;
     require_once ($CFG->dirroot . '/group/lib.php');
 
     $result = '';
-    
+
     $courseid=$course->id;
     $roleid = $data->roleassign;
     $useridfield = $data->firstcolumn;
@@ -103,21 +98,21 @@ function mass_enroll($cir, $course, $context, $data) {
 
     $role =$DB->get_record('role', array('id'=>$roleid));
 
-    $result .= get_string('im:using_role', 'local_mass_enroll', $role->name)."\n"; 
+    $result .= get_string('im:using_role', 'local_mass_enroll', $role->name)."\n";
 
     $plugin = enrol_get_plugin('manual');
     //Moodle 2.x enrolment and role assignment are different
     // make sure couse DO have a manual enrolment plugin instance in that course
     //that we are going to use (only one instance is allowed @see enrol/manual/lib.php get_new_instance)
-    // thus call to get_record is safe 
+    // thus call to get_record is safe
     $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
     if (empty($instance)) {
         // Only add an enrol instance to the course if non-existent
         $enrolid = $plugin->add_instance($course);
         $instance = $DB->get_record('enrol', array('id' => $enrolid));
     }
-    
-   
+
+
     // init csv import helper
     $cir->init();
     while ($fields = $cir->next()) {
@@ -129,18 +124,18 @@ function mass_enroll($cir, $course, $context, $data) {
         // print_r($fields);
         // $enrollablecount++;
         // continue;
-        
-        // 1rst column = id Moodle (idnumber,username or email)    
-        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer 
+
+        // 1rst column = id Moodle (idnumber,username or email)
+        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer
             $fields[0]= str_replace('"', '', trim($fields[0]));
-        
+
         if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
             $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0] ). "\n";
             continue;
         }
         //already enroled ?
        // if (user_has_role_assignment($user->id, $roleid, $context->id)) {
-       // we DO NOT support multiple roles in a course 
+       // we DO NOT support multiple roles in a course
         if ($ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$user->id))) {
             $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
 
@@ -244,38 +239,37 @@ function mass_enroll($cir, $course, $context, $data) {
     return $result;
 }
 
-
 /**
  * process the mass enrolment
  * @param csv_import_reader $cir  an import reader created by caller
  * @param Object $course  a course record from table mdl_course
  * @param Object $context  course context instance
- * @param Object $data    data from a moodleform 
- * @return string  log of operations 
+ * @param Object $data    data from a moodleform
+ * @return string  log of operations
  */
 function mass_unenroll($cir, $course, $context, $data) {
     global $CFG,$DB;
      $result = '';
-    
+
     $courseid=$course->id;
     $useridfield = $data->firstcolumn;
 
     $unenrollablecount = 0;
- 
+
 
     $plugin = enrol_get_plugin('manual');
     //Moodle 2.x enrolment and role assignment are different
     // make sure couse DO have a manual enrolment plugin instance in that course
     //that we are going to use (only one instance is allowed @see enrol/manual/lib.php get_new_instance)
-    // thus call to get_record is safe 
+    // thus call to get_record is safe
     $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
     if (empty($instance)) {
         // Only add an enrol instance to the course if non-existent
         $enrolid = $plugin->add_instance($course);
         $instance = $DB->get_record('enrol', array('id' => $enrolid));
     }
-    
-   
+
+
     // init csv import helper
     $cir->init();
     while ($fields = $cir->next()) {
@@ -283,18 +277,18 @@ function mass_unenroll($cir, $course, $context, $data) {
 
         if (empty ($fields))
             continue;
-    
-        // 1rst column = id Moodle (idnumber,username or email)    
-        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer 
+
+        // 1rst column = id Moodle (idnumber,username or email)
+        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer
             $fields[0]= str_replace('"', '', trim($fields[0]));
-        
+
         if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
             $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0] ). "\n";
             continue;
         }
         //already enroled ?
         if (!$ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$user->id))) {
-            // weird, user not enrolled      
+            // weird, user not enrolled
             $result .= get_string('im:not_in', 'local_mass_enroll', fullname($user)). "\n";
 
         } else {
@@ -311,13 +305,11 @@ function mass_unenroll($cir, $course, $context, $data) {
     return $result;
 }
 
-
-
 /**
  * Enter description here ...
  * @param string $newgroupname
  * @param int $courseid
- * @return int id   Moodle id of inserted record 
+ * @return int id   Moodle id of inserted record
  */
 function mass_enroll_add_group($newgroupname, $courseid) {
     $newgroup = new stdClass();
@@ -344,7 +336,7 @@ function mass_enroll_add_grouping($newgroupingname, $courseid) {
 /**
  * @param string $name group name
  * @param int $courseid course
- * @return string or false 
+ * @return string or false
  */
 function mass_enroll_group_exists($name, $courseid) {
     return groups_get_group_by_name($courseid, $name);

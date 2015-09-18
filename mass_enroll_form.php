@@ -1,24 +1,59 @@
 <?php
-// $Id: inscriptions_massives_form.php 352 2010-02-27 12:16:55Z ppollet $
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Bulk enrolment form
+ *
+ * File         mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once ($CFG->libdir . '/formslib.php');
 
+/**
+ * Bulk enrolment form
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mass_enroll_form extends moodleform {
 
-	function definition() {
-		global $CFG,$DB; 
-		
-		$mform = & $this->_form;
-		$course = $this->_customdata['course'];
-		$context = $this->_customdata['context'];
-		
-		$mform->addElement('header', 'general', ''); //fill in the data depending on page params
-		//later using set_data
-		$mform->addElement('filepicker', 'attachment', get_string('location', 'enrol_flatfile'));
+    function definition() {
+        global $CFG, $DB;
 
-		$mform->addRule('attachment', null, 'required');
-		
-		$choices = csv_import_reader::get_delimiter_list();
+        $mform = & $this->_form;
+        $course = $this->_customdata['course'];
+        $context = $this->_customdata['context'];
+
+        $mform->addElement('header', 'general', ''); //fill in the data depending on page params
+        //later using set_data
+        $mform->addElement('filepicker', 'attachment', get_string('location', 'enrol_flatfile'));
+
+        $mform->addRule('attachment', null, 'required');
+
+        $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
         if (array_key_exists('cfg', $choices)) {
             $mform->setDefault('delimiter_name', 'cfg');
@@ -31,42 +66,42 @@ class mass_enroll_form extends moodleform {
         $choices = textlib::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
-		
+
         $roles = get_assignable_roles($context);
-		$mform->addElement('select', 'roleassign', get_string('roleassign', 'local_mass_enroll'), $roles);
-		$studentRole= $DB->get_record('role', array('archetype'=>'student'));
-		$mform->setDefault('roleassign', $studentRole->id);
+        $mform->addElement('select', 'roleassign', get_string('roleassign', 'local_mass_enroll'), $roles);
+        $studentRole = $DB->get_record('role', array('archetype' => 'student'));
+        $mform->setDefault('roleassign', $studentRole->id);
 
-		$ids = array (
-			'idnumber' => get_string('idnumber', 'local_mass_enroll'),
-			'username' => get_string('username', 'local_mass_enroll'),
-			'email' => get_string('email')
-		);
-		$mform->addElement('select', 'firstcolumn', get_string('firstcolumn', 'local_mass_enroll'), $ids);
-		$mform->setDefault('firstcolumn', 'idnumber');
+        $ids = array(
+            'idnumber' => get_string('idnumber', 'local_mass_enroll'),
+            'username' => get_string('username', 'local_mass_enroll'),
+            'email' => get_string('email')
+        );
+        $mform->addElement('select', 'firstcolumn', get_string('firstcolumn', 'local_mass_enroll'), $ids);
+        $mform->setDefault('firstcolumn', 'idnumber');
 
-		$mform->addElement('selectyesno', 'creategroups', get_string('creategroups', 'local_mass_enroll'));
-		$mform->setDefault('creategroups', 1);
+        $mform->addElement('selectyesno', 'creategroups', get_string('creategroups', 'local_mass_enroll'));
+        $mform->setDefault('creategroups', 1);
 
-			$mform->addElement('selectyesno', 'creategroupings', get_string('creategroupings', 'local_mass_enroll'));
-			$mform->setDefault('creategroupings', 1);
+        $mform->addElement('selectyesno', 'creategroupings', get_string('creategroupings', 'local_mass_enroll'));
+        $mform->setDefault('creategroupings', 1);
 
 
-		$mform->addElement('selectyesno', 'mailreport', get_string('mailreport', 'local_mass_enroll'));
-		$mform->setDefault('mailreport', 1);
+        $mform->addElement('selectyesno', 'mailreport', get_string('mailreport', 'local_mass_enroll'));
+        $mform->setDefault('mailreport', 1);
 
-		//-------------------------------------------------------------------------------
-		// buttons
+        //-------------------------------------------------------------------------------
+        // buttons
 
-		$this->add_action_buttons(true, get_string('enroll', 'local_mass_enroll'));
+        $this->add_action_buttons(true, get_string('enroll', 'local_mass_enroll'));
 
-		$mform->addElement('hidden', 'id', $course->id);
-		$mform->setType('id', PARAM_INT);
-	}
+        $mform->addElement('hidden', 'id', $course->id);
+        $mform->setType('id', PARAM_INT);
+    }
 
-	function validation($data, $files) {
-		$errors = parent :: validation($data, $files);
-		return $errors;
-	}
+    function validation($data, $files) {
+        $errors = parent :: validation($data, $files);
+        return $errors;
+    }
+
 }
-?>

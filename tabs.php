@@ -17,25 +17,31 @@
 /**
  * Prints navigation tabs
  *
- * @package    core_group
- * @copyright  2010 Petr Skoda (http://moodle.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * File         lib.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   2010 Petr Skoda (http://moodle.com)
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-    $row = $tabs = array();
-    
-    if (has_capability('local/mass_enroll:enrol', $context)) {
-        $row[] = new tabobject('mass_enroll',
-                               $CFG->wwwroot.'/local/mass_enroll/mass_enroll.php?id='.$id,
-                              get_string('mass_enroll','local_mass_enroll'));
-    }
-    
-    if (has_capability('local/mass_enroll:unenrol', $context)) {
-        $row[] = new tabobject('mass_unenroll',
-                               $CFG->wwwroot.'/local/mass_enroll/mass_unenroll.php?id='.$id,
-                               get_string('mass_unenroll', 'local_mass_enroll'));
-    }
-  
-    $tabs[] = $row;
-    echo '<div class="groupdisplay">';
-    print_tabs($tabs, $currenttab);
-    echo '</div>';
+$row = $tabs = array();
+
+if (has_capability('local/mass_enroll:enrol', $context)) {
+    $row[] = new tabobject('mass_enroll',
+            $CFG->wwwroot . '/local/mass_enroll/mass_enroll.php?id=' . $id,
+            get_string('mass_enroll', 'local_mass_enroll'));
+}
+
+if (has_capability('local/mass_enroll:unenrol', $context)) {
+    $row[] = new tabobject('mass_unenroll',
+            $CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php?id=' . $id,
+            get_string('mass_unenroll', 'local_mass_enroll'));
+}
+
+$tabs[] = $row;
+echo '<div class="groupdisplay">';
+print_tabs($tabs, $currenttab);
+echo '</div>';

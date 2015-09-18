@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,12 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_mass_enroll', language 'en', branch 'MOODLE_22_STABLE'
+ * Strings for component 'block_mass_enroll', EN
  *
- * @package   block_mass_enroll
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * File         block_mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     block_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 $string['pluginname'] = 'Bulk enrolments';
-

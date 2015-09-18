@@ -19,19 +19,21 @@
  *
  * For naming conventions, see lib/db/access.php.
  *
- * @package    local_mass_enroll
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright  2012 onwards Patrick Pollet
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ * File         mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
     'local/mass_enroll:enrol' => array(
         'riskbitmask' => RISK_XSS,
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -40,18 +42,14 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/role:assign'
     ),
-
-    // not given by default to editingteacher ( life is tough) 
+    // not given by default to editingteacher ( life is tough)
     'local/mass_enroll:unenrol' => array(
-        'riskbitmask' => RISK_XSS | RISK_DATALOSS ,
-
+        'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
             'manager' => CAP_ALLOW
         ),
-         'clonepermissionsfrom' => 'moodle/role:assign'
+        'clonepermissionsfrom' => 'moodle/role:assign'
     ),
-
-   
 );
