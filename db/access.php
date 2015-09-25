@@ -25,8 +25,8 @@
  * @package     local_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
- * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -42,7 +42,7 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/role:assign'
     ),
-    // not given by default to editingteacher ( life is tough)
+    // Not given by default to editingteacher ( life is tough).
     'local/mass_enroll:unenrol' => array(
         'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',

@@ -23,7 +23,7 @@
  * @package     block_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2012 onwards Patrick Pollet
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -23,20 +23,20 @@
  * @package     local_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2012 onwards Patrick Pollet
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Inscriptions massives';
 
-//capabilities name required Moodle 2.3
+// Capabilities name required Moodle 2.3.
 $string['mass_enroll:enrol'] = 'Inscrire des utilisateurs à un cours par fichier CSV';
 $string['mass_enroll:unenrol'] = 'Désinscrire des utilisateurs d\' un cours par fichier CSV';
 
 
 $string['mass_enroll'] = 'Inscriptions massives';
 $string['mass_unenroll'] = 'Désinscriptions massives';
-$string['mass_enroll_info'] ='
+$string['mass_enroll_info'] = '
 <p>
 Avec cette option vous allez pouvoir inscrire massivement à votre cours une liste d\'utilisateurs existants dans Moodle
 contenue dans un fichier que vous avez préparé, un compte par ligne
@@ -52,7 +52,7 @@ Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si
 </p>
 ';
 
-$string['mass_unenroll_info'] ='
+$string['mass_unenroll_info'] = '
 <p>
 Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs déja inscrits à ce cours, contenue dans un fichier que vous avez préparé, un compte par ligne
 </p>
@@ -78,14 +78,14 @@ $string['idnumber'] = 'Numéro d\'étudiant';
 $string['username'] = 'Login';
 $string['mail_enrolment_subject'] = 'Inscriptions massives sur {$a}';
 $string['mail_unenrolment_subject'] = 'Désinscriptions massives sur {$a}';
-$string['mail_enrolment']='
+$string['mail_enrolment'] = '
 Bonjour,
 Vous venez d\'inscrire la liste d\'utilisateurs suivants à votre cours \'{$a->course}\'.
 Voici un rapport des opérations :
 {$a->report}
 Cordialement.
 ';
-$string['mail_unenrolment']='
+$string['mail_unenrolment'] = '
 Bonjour,
 Vous venez de désinscrire la liste d\'utilisateurs suivants de votre cours \'{$a->course}\'.
 Voici un rapport des opérations :
@@ -116,7 +116,7 @@ $string['im:stats_g'] = '{$a->nb} groupe(s) créé(s) : {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} groupement(s) créé(s) : {$a->what}';
 $string['im:err_opening_file'] = 'ERREUR en ouvrant le fichier {$a}';
 
-$string['mass_enroll_help']='
+$string['mass_enroll_help'] = '
 
 <h1>Inscriptions massives</h1>
 

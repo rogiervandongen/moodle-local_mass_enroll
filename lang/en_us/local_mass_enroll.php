@@ -1,13 +1,41 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Language file for local_mass_enroll, EN-US
+ *
+ * File         local_mass_enroll.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 $string['pluginname'] = 'Mass enrollments';
 
-//capabilities name required Moodle 2.3
+// Capabilities name required Moodle 2.3.
 $string['mass_enroll:enrol'] = 'Enroll users to a course by CSV file';
 $string['mass_enroll:unenrol'] = 'Unenroll users from a course by CSV file';
 
 $string['mass_enroll'] = 'Bulk enrollments';
 $string['mass_unenroll'] = 'Bulk unenrollments';
-$string['mass_enroll_info'] ='
+$string['mass_enroll_info'] = '
 <p>
 With this option you are going to enroll a list of known users from a file with one account per line
 </p>
@@ -24,10 +52,9 @@ You may repeat this operation at will without damages, for example if you forgot
 </p>
 ';
 
-
-$string['mass_unenroll_info'] =' 
+$string['mass_unenroll_info'] = '
 <p>
-With this option you are going to unenroll a list on users from a file with one account per line. 
+With this option you are going to unenroll a list on users from a file with one account per line.
 </p>
 <p>
 <b> The firstline </b> the empty lines or unknown accounts will be skipped. </p>
@@ -55,14 +82,14 @@ $string['idnumber'] = 'Id number';
 $string['username'] = 'Login';
 $string['mail_enrolment_subject'] = 'Bulk enrollments on {$a}';
 $string['mail_unenrolment_subject'] = 'Bulk unenrollments on {$a}';
-$string['mail_enrolment']='
+$string['mail_enrolment'] = '
 Hello,
 You just enrolled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
 {$a->report}
 Sincerly.
 ';
-$string['mail_unenrolment']='
+$string['mail_unenrolment'] = '
 Hello,
 You just unenrolled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
@@ -93,8 +120,7 @@ $string['im:stats_g'] = '{$a->nb} group(s) created : {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} grouping(s) created : {$a->what}';
 $string['im:err_opening_file'] = 'error opening file {$a}';
 
-
-$string['mass_enroll_help'] = ' 
+$string['mass_enroll_help'] = '
 <h1>Bulk enrollments</h1>
 
 <p>
@@ -198,7 +224,7 @@ some external directory (LDAP...)
 ';
 
 
-$string['mass_unenroll_help'] = ' 
+$string['mass_unenroll_help'] = '
 <h1>Bulk unenrollments</h1>
 
 <p>
@@ -238,4 +264,13 @@ You may repeat this operation at will without dammages, for example if you forgo
 <p>
 <span <font color=\'red\'>(**) </font></span>: target account must exist in Moodle and be enrolled to this course.
 </p>
-' ;
+';
+$string['massenrollsettings'] = 'Mass enrol settings';
+$string['localmassenrolldefaults'] = 'Mass enrol default settings';
+$string['enablemassenrol'] = 'Allow mass enrolment from course administration';
+$string['enablemassenrol_help'] = 'Check this option to allow extension for mass enrolment in the course administration tree';
+$string['enablemassunenrol'] = 'Allow mass unenrolment from course administration';
+$string['enablemassunenrol_help'] = 'Check this option to allow extension for mass unenrolment in the course administration tree';
+$string['localmassenrollextensions'] = 'Menu extension settings';
+$string['mailreportdefault'] = 'Send reports default';
+$string['mailreportdefault_help'] = 'Configure the default setting for sending reports for the bulk (un)enrolment forms';

@@ -25,19 +25,19 @@
  * @package     local_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2012 onwards Patrick Pollet
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Mass enrolments';
 
-//capabilities name required Moodle 2.3
+// Capabilities name required Moodle 2.3.
 $string['mass_enroll:enrol'] = 'Einschreiben von Nutzer/innen in einen Kurs per CSV-Datei';
 $string['mass_enroll:unenrol'] = 'Austragen von Nutzer/innen aus einem Kurs per CSV-Datei';
 $string['mass_enroll'] = 'Massen-Einschreibung';
 $string['mass_unenroll'] = 'Massen-Austragung';
 
-$string['mass_enroll_info'] ='
+$string['mass_enroll_info'] = '
 <p>Mit dieser Option schreiben Sie eine Liste mit bekannten Nutzer/innen ein. Verwenden Sie dazu eine Datei mit einem Nutzerkonto pro Zeile.</p>
 <p><strong>Die erste Zeile,</strong> leere Zeilen oder unbekannte Konten werden &uuml;bersprungen. </p>
 <p>Die Datei darf eine oder zwei Spalten enthalten, die durch ein Komma, Semikolon oder Tab voneinander getrennt sind.<br/>
@@ -68,14 +68,14 @@ $string['username'] = 'Login';
 $string['mail_enrolment_subject'] = 'Massen-Einschreibung in {$a}';
 $string['mail_unenrolment_subject'] = 'Massen-Austragung in {$a}';
 
-$string['mail_enrolment']='
+$string['mail_enrolment'] = '
 Guten Tag,
 Sie haben gerade folgende Nutzerinnen und Nutzer in Ihren Kurs \'{$a->course}\' eingeschrieben.
 Hier ist ein Bericht der Aktionen :
 {$a->report}
 Mit freundlichen Grüßen.
 ';
-$string['mail_unenrolment']='
+$string['mail_unenrolment'] = '
 Guten Tag,
 Sie haben gerade folgende Nutzerinnen und Nutzer aus Ihrem Kurs \'{$a->course}\' ausgetragen.
 Hier ist ein Bericht der Aktionen :
@@ -105,8 +105,6 @@ $string['im:stats_g'] = '{$a->nb} Gruppe(n) erstellt: {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} Gruppierungen erstellt: {$a->what}';
 $string['im:err_opening_file'] = 'Fehler beim &Ouml;ffnen von Datei {$a}';
 $string['im:stats_ui'] = '{$a} ausgetragen';
-
-
 
 $string['mass_enroll_help'] = '
 <h1>Masseneinschreibung</h1>

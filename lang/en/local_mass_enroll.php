@@ -23,19 +23,19 @@
  * @package     local_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
+ * @copyright   2012 onwards Patrick Pollet
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Mass enrolments';
 
-//capabilities name required Moodle 2.3
+// Capabilities name required Moodle 2.3.
 $string['mass_enroll:enrol'] = 'Enrol users to a course by CSV file';
 $string['mass_enroll:unenrol'] = 'Unenrol users from a course by CSV file';
 
 $string['mass_enroll'] = 'Bulk enrolments';
 $string['mass_unenroll'] = 'Bulk unenrolments';
-$string['mass_enroll_info'] ='
+$string['mass_enroll_info'] = '
 <p>
 With this option you are going to enrol a list of known users from a file with one account per line
 </p>
@@ -52,8 +52,7 @@ You may repeat this operation at will without damages, for example if you forgot
 </p>
 ';
 
-
-$string['mass_unenroll_info'] ='
+$string['mass_unenroll_info'] = '
 <p>
 With this option you are going to unenrol a list on users from a file with one account per line.
 </p>
@@ -83,14 +82,14 @@ $string['idnumber'] = 'Id number';
 $string['username'] = 'Login';
 $string['mail_enrolment_subject'] = 'Bulk enrolments on {$a}';
 $string['mail_unenrolment_subject'] = 'Bulk unenrolments on {$a}';
-$string['mail_enrolment']='
+$string['mail_enrolment'] = '
 Hello,
 You just enroled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
 {$a->report}
 Sincerly.
 ';
-$string['mail_unenrolment']='
+$string['mail_unenrolment'] = '
 Hello,
 You just unenroled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
@@ -120,7 +119,6 @@ $string['im:stats_ui'] = '{$a} unenroled';
 $string['im:stats_g'] = '{$a->nb} group(s) created : {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} grouping(s) created : {$a->what}';
 $string['im:err_opening_file'] = 'error opening file {$a}';
-
 
 $string['mass_enroll_help'] = '
 <h1>Bulk enrolments</h1>
@@ -266,4 +264,13 @@ You may repeat this operation at will without dammages, for example if you forgo
 <p>
 <span <font color=\'red\'>(**) </font></span>: target account must exist in Moodle and be enrolled to this course.
 </p>
-' ;
+';
+$string['massenrollsettings'] = 'Mass enrol settings';
+$string['localmassenrolldefaults'] = 'Mass enrol default settings';
+$string['enablemassenrol'] = 'Allow mass enrolment from course administration';
+$string['enablemassenrol_help'] = 'Check this option to allow extension for mass enrolment in the course administration tree';
+$string['enablemassunenrol'] = 'Allow mass unenrolment from course administration';
+$string['enablemassunenrol_help'] = 'Check this option to allow extension for mass unenrolment in the course administration tree';
+$string['localmassenrollextensions'] = 'Menu extension settings';
+$string['mailreportdefault'] = 'Send reports default';
+$string['mailreportdefault_help'] = 'Configure the default setting for sending reports for the bulk (un)enrolment forms';

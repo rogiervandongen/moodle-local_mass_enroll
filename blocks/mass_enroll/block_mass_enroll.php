@@ -22,44 +22,64 @@
  *
  * @package     local_mass_enroll
  *
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
- * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Bulk enrolment block implementation
  *
- * @package     local_mass_enroll
+ * @package     block_mass_enroll
  *
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
- * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_mass_enroll extends block_list {
 
-    function init() {
+    /**
+     * initialize plugin
+     */
+    public function init() {
         $this->title = get_string('mass_enroll', 'local_mass_enroll');
     }
 
-    function applicable_formats() {
-        // return array('site' => false, 'course-view' => true, 'my'=>false);
+    /**
+     * Get applicable formats
+     *
+     * @return array
+     */
+    public function applicable_formats() {
         return array('all' => true, 'mod' => false, 'my' => false,
             'tag' => false);
     }
 
-    function specialization() {
+    /**
+     * Set specialization
+     */
+    public function specialization() {
         $this->title = get_string('mass_enroll', 'local_mass_enroll');
     }
 
-    function instance_allow_multiple() {
+    /**
+     * Do we allow multiple instances?
+     *
+     * @return boolean
+     */
+    public function instance_allow_multiple() {
         return false;
     }
 
-    function get_content() {
+    /**
+     * Get (cached) plugin contents
+     *
+     * @return stdClass
+     */
+    public function get_content() {
         global $CFG, $OUTPUT;
 
-        if ($this->content !== NULL) {
+        if ($this->content !== null) {
             return $this->content;
         }
 
@@ -88,7 +108,7 @@ class block_mass_enroll extends block_list {
                     $icon . get_string('mass_unenroll', 'local_mass_enroll') . '</a>';
         }
 
-        // sera vide donc non affiché si  USER n'a aucune des 2 capacités
+        // Sera vide donc non affiché si  USER n'a aucune des 2 capacités.
         return $this->content;
     }
 

@@ -23,13 +23,22 @@
  * @package     local_mass_enroll
  *
  * @copyright   1999 onwards Martin Dougiamas and others {@link http://moodle.com}
- * @copyright   2012 onwards Patrick Pollet {@link mailto:pp@patrickpollet.net
- * @copyright   2015 onwards Rogier van Dongen <rogier@sebsoft.nl>
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Quick fix for Moodle 2.9
+ *
+ * @param settings_navigation $navigation
+ * @param course_context      $context
+ * @return void
+ */
+function local_mass_enroll_extend_settings_navigation(settings_navigation $navigation, $context) {
+    local_mass_enroll_extends_settings_navigation($navigation, $context);
+}
 /**
  * Hook to insert a link in settings navigation menu block
  *
@@ -38,55 +47,51 @@ defined('MOODLE_INTERNAL') || die();
  * @return void
  */
 function local_mass_enroll_extends_settings_navigation(settings_navigation $navigation, $context) {
-    global $CFG;
-    // If not in a course context, then leave
+    // If not in a course context, then leave.
     if ($context == null || $context->contextlevel != CONTEXT_COURSE) {
         return;
     }
 
-    // When on front page there is 'frontpagesettings' node, other
-    // courses will have 'courseadmin' node
-    if (null == ($courseadmin_node = $navigation->get('courseadmin'))) {
-        // Keeps us off the front page
+    // Front page has a 'frontpagesettings' node, other courses will have 'courseadmin' node.
+    if (null == ($courseadminnode = $navigation->get('courseadmin'))) {
+        // Keeps us off the front page.
         return;
     }
-    if (null == ($useradmin_node = $courseadmin_node->get('users'))) {
-        return;
-    }
-
-    // Add our links no need to patch core anymore !!!!
-
-    if (empty($CFG->allow_mass_enroll_feature)) {
+    if (null == ($useradminnode = $courseadminnode->get('users'))) {
         return;
     }
 
-    if (has_capability('local/mass_enroll:enrol', $context)) {
-        $url = new moodle_url('/local/mass_enroll/mass_enroll.php', array('id'=>$context->instanceid));
-        $useradmin_node->add(get_string('mass_enroll', 'local_mass_enroll'), $url, navigation_node::TYPE_SETTING, null, 'massenrols', new pix_icon('i/admin', ''));
+    $config = get_config('local_mass_enroll');
+    if ((bool)$config->enablemassenrol) {
+        if (has_capability('local/mass_enroll:enrol', $context)) {
+            $url = new moodle_url('/local/mass_enroll/mass_enroll.php', array('id' => $context->instanceid));
+            $useradminnode->add(get_string('mass_enroll', 'local_mass_enroll'), $url,
+                    navigation_node::TYPE_SETTING, null, 'massenrols', new pix_icon('i/admin', ''));
+        }
     }
-    if (has_capability('local/mass_enroll:unenrol', $context)) {
-        $url = new moodle_url('/local/mass_enroll/mass_unenroll.php', array('id'=>$context->instanceid));
-        $useradmin_node->add(get_string('mass_unenroll', 'local_mass_enroll'), $url, navigation_node::TYPE_SETTING, null, 'massunenrols', new pix_icon('i/admin', ''));
+    if ((bool)$config->enablemassunenrol) {
+        if (has_capability('local/mass_enroll:unenrol', $context)) {
+            $url = new moodle_url('/local/mass_enroll/mass_unenroll.php', array('id' => $context->instanceid));
+            $useradminnode->add(get_string('mass_unenroll', 'local_mass_enroll'), $url,
+                    navigation_node::TYPE_SETTING, null, 'massunenrols', new pix_icon('i/admin', ''));
+        }
     }
-
-
 }
 
 /**
  * process the mass enrolment
+ *
  * @param csv_import_reader $cir  an import reader created by caller
- * @param Object $course  a course record from table mdl_course
- * @param Object $context  course context instance
- * @param Object $data    data from a moodleform
+ * @param stdClass $course  a course record from table mdl_course
+ * @param stdClass $context  course context instance
+ * @param stdClass $data    data from a moodleform
  * @return string  log of operations
  */
 function mass_enroll($cir, $course, $context, $data) {
-    global $CFG,$DB;
-    require_once ($CFG->dirroot . '/group/lib.php');
+    global $CFG, $DB;
+    require_once($CFG->dirroot . '/group/lib.php');
 
     $result = '';
-
-    $courseid=$course->id;
     $roleid = $data->roleassign;
     $useridfield = $data->firstcolumn;
 
@@ -96,85 +101,71 @@ function mass_enroll($cir, $course, $context, $data) {
     $createdgroups = '';
     $createdgroupings = '';
 
-    $role =$DB->get_record('role', array('id'=>$roleid));
+    $role = $DB->get_record('role', array('id' => $roleid));
 
-    $result .= get_string('im:using_role', 'local_mass_enroll', $role->name)."\n";
+    $result .= get_string('im:using_role', 'local_mass_enroll', $role->name) . "\n";
 
     $plugin = enrol_get_plugin('manual');
-    //Moodle 2.x enrolment and role assignment are different
-    // make sure couse DO have a manual enrolment plugin instance in that course
-    //that we are going to use (only one instance is allowed @see enrol/manual/lib.php get_new_instance)
-    // thus call to get_record is safe
+    // Moodle 2.x enrolment and role assignment are different.
+    // Assure course has manual enrolment plugin instance we are going to use.
+    // Only one instance is allowed; see enrol/manual/lib.php get_new_instance().
     $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
     if (empty($instance)) {
-        // Only add an enrol instance to the course if non-existent
+        // Only add an enrol instance to the course if non-existent.
         $enrolid = $plugin->add_instance($course);
         $instance = $DB->get_record('enrol', array('id' => $enrolid));
     }
 
-
-    // init csv import helper
+    // Init csv import helper.
     $cir->init();
     while ($fields = $cir->next()) {
-        $a = new StdClass();
+        $a = new stdClass();
 
-        if (empty ($fields))
-            continue;
-
-        // print_r($fields);
-        // $enrollablecount++;
-        // continue;
-
-        // 1rst column = id Moodle (idnumber,username or email)
-        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer
-            $fields[0]= str_replace('"', '', trim($fields[0]));
-
-        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
-            $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0] ). "\n";
+        if (empty($fields)) {
             continue;
         }
-        //already enroled ?
-       // if (user_has_role_assignment($user->id, $roleid, $context->id)) {
-       // we DO NOT support multiple roles in a course
-        if ($ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$user->id))) {
-            $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
 
+        // First column = id Moodle (idnumber,username or email).
+        // Get rid on eventual double quotes unfortunately not done by Moodle CSV importer.
+        $fields[0] = str_replace('"', '', trim($fields[0]));
+
+        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
+            $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0]) . "\n";
+            continue;
+        }
+        // Already enroled?
+        // We DO NOT support multiple roles in a course.
+        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+            $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else {
-            //TODO take care of timestart/timeend in course settings
-            // done in rev 1.1
+            // Take care of timestart/timeend in course settings.
             $timestart = time();
-            // remove time part from the timestamp and keep only the date part
+            // Remove time part from the timestamp and keep only the date part.
             $timestart = make_timestamp(date('Y', $timestart), date('m', $timestart), date('d', $timestart), 0, 0, 0);
             if ($instance->enrolperiod) {
                 $timeend = $timestart + $instance->enrolperiod;
             } else {
                 $timeend = 0;
             }
-            // not anymore so easy in Moodle 2.x
-            // if (!role_assign($roleid, $user->id, null, $context->id, $timestart, $timeend, 0, 'flatfile')) {
-            //    $result .= get_string('im:error_in', 'local_mass_enroll', fullname($user)) . "\n";
-            //    continue;
-            //}
-            //
-            // Enrol the user with this plugin instance (unfortunately return void, no more status )
-            $plugin->enrol_user($instance, $user->id,$roleid,$timestart,$timeend);
+            // Enrol the user with this plugin instance (unfortunately return void, no more status).
+            $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend);
             $result .= get_string('im:enrolled_ok', 'local_mass_enroll', fullname($user));
             $enrollablecount++;
         }
 
-        $group = str_replace('"','',trim($fields[1]));
-        // 2nd column ?
-        if (empty ($group)) {
+        $group = str_replace('"', '', trim($fields[1]));
+        // 2nd column?
+        if (empty($group)) {
             $result .= "\n";
-            continue; // no group for this one
+            continue; // No group for this one.
         }
 
-        // create group if needed
-        if (!($gid = mass_enroll_group_exists($group, $courseid))) {
+        // Create group if needed.
+        if (!($gid = mass_enroll_group_exists($group, $course->id))) {
             if ($data->creategroups) {
-                if (!($gid = mass_enroll_add_group($group, $courseid))) {
+                if (!($gid = mass_enroll_add_group($group, $course->id))) {
                     $a->group = $group;
-                    $a->courseid = $courseid;
+                    $a->courseid = $course->id;
                     $result .= get_string('im:error_addg', 'local_mass_enroll', $a) . "\n";
                     continue;
                 }
@@ -186,24 +177,20 @@ function mass_enroll($cir, $course, $context, $data) {
             }
         }
 
-        // if groupings are enabled on the site (should be ?)
-        // if ($CFG->enablegroupings) { // not anymore in Moodle 2.x
-        if (!($gpid = mass_enroll_grouping_exists($group, $courseid))) {
+        // If groupings are enabled on the site (should be?).
+        if (!($gpid = mass_enroll_grouping_exists($group, $course->id))) {
             if ($data->creategroupings) {
-                if (!($gpid = mass_enroll_add_grouping($group, $courseid))) {
+                if (!($gpid = mass_enroll_add_grouping($group, $course->id))) {
                     $a->group = $group;
-                    $a->courseid = $courseid;
+                    $a->courseid = $course->id;
                     $result .= get_string('im:error_add_grp', 'local_mass_enroll', $a) . "\n";
                     continue;
                 }
                 $createdgroupingscount++;
                 $createdgroupings .= " $group";
-            } else {
-                // don't complains,
-                // just do the enrolment to group
             }
         }
-        // if grouping existed or has just been created
+        // If grouping existed or has just been created.
         if ($gpid && !(mass_enroll_group_in_grouping($gid, $gpid))) {
             if (!(mass_enroll_add_group_grouping($gid, $gpid))) {
                 $a->group = $group;
@@ -211,9 +198,8 @@ function mass_enroll($cir, $course, $context, $data) {
                 continue;
             }
         }
-        //}
 
-        // finally add to group if needed
+        // Finally add to group if needed.
         if (!groups_is_member($gid, $user->id)) {
             $ok = groups_add_member($gid, $user->id);
             if ($ok) {
@@ -224,10 +210,9 @@ function mass_enroll($cir, $course, $context, $data) {
         } else {
             $result .= get_string('im:already_in_g', 'local_mass_enroll', $group) . "\n";
         }
-
     }
 
-    //recap final
+    // Recap final.
     $result .= get_string('im:stats_i', 'local_mass_enroll', $enrollablecount) . "\n";
     $a->nb = $createdgroupscount;
     $a->what = $createdgroups;
@@ -236,77 +221,96 @@ function mass_enroll($cir, $course, $context, $data) {
     $a->what = $createdgroupings;
     $result .= get_string('im:stats_grp', 'local_mass_enroll', $a) . "\n";
 
+    // Trigger event.
+    $event = \local_mass_enroll\event\mass_enrolment_created::create(
+        array(
+            'objectid' => $course->id,
+            'courseid' => $course->id,
+            'context' => \context_course::instance($course->id),
+            'other' => array('info' => get_string('mass_enroll', 'local_mass_enroll'))
+        )
+    );
+    $event->trigger();
+
     return $result;
 }
 
 /**
- * process the mass enrolment
+ * process the mass unenrolment
+ *
  * @param csv_import_reader $cir  an import reader created by caller
- * @param Object $course  a course record from table mdl_course
- * @param Object $context  course context instance
- * @param Object $data    data from a moodleform
+ * @param stdClass $course  a course record from table mdl_course
+ * @param stdClass $context  course context instance
+ * @param stdClass $data    data from a moodleform
  * @return string  log of operations
  */
 function mass_unenroll($cir, $course, $context, $data) {
-    global $CFG,$DB;
-     $result = '';
+    global $DB;
+    $result = '';
 
-    $courseid=$course->id;
     $useridfield = $data->firstcolumn;
-
     $unenrollablecount = 0;
 
-
     $plugin = enrol_get_plugin('manual');
-    //Moodle 2.x enrolment and role assignment are different
-    // make sure couse DO have a manual enrolment plugin instance in that course
-    //that we are going to use (only one instance is allowed @see enrol/manual/lib.php get_new_instance)
-    // thus call to get_record is safe
+    // Moodle 2.x enrolment and role assignment are different.
+    // Assure course has manual enrolment plugin instance we are going to use.
+    // Only one instance is allowed; see enrol/manual/lib.php get_new_instance().
     $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
     if (empty($instance)) {
-        // Only add an enrol instance to the course if non-existent
+        // Only add an enrol instance to the course if non-existent.
         $enrolid = $plugin->add_instance($course);
         $instance = $DB->get_record('enrol', array('id' => $enrolid));
     }
 
-
-    // init csv import helper
+    // Init csv import helper.
     $cir->init();
     while ($fields = $cir->next()) {
-        $a = new StdClass();
+        $a = new stdClass();
 
-        if (empty ($fields))
-            continue;
-
-        // 1rst column = id Moodle (idnumber,username or email)
-        // get rid on eventual double quotes unfortunately not done by Moodle CSV importer
-            $fields[0]= str_replace('"', '', trim($fields[0]));
-
-        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
-            $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0] ). "\n";
+        if (empty($fields)) {
             continue;
         }
-        //already enroled ?
-        if (!$ue = $DB->get_record('user_enrolments', array('enrolid'=>$instance->id, 'userid'=>$user->id))) {
-            // weird, user not enrolled
-            $result .= get_string('im:not_in', 'local_mass_enroll', fullname($user)). "\n";
 
+        // First column = id Moodle (idnumber,username or email).
+        // Get rid on eventual double quotes unfortunately not done by Moodle CSV importer.
+        $fields[0] = str_replace('"', '', trim($fields[0]));
+
+        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
+            $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0]) . "\n";
+            continue;
+        }
+        // Already enroled?
+        if (!$ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+            // Weird, user not enrolled.
+            $result .= get_string('im:not_in', 'local_mass_enroll', fullname($user)) . "\n";
         } else {
-            // Enrol the user with this plugin instance (unfortunately return void, no more status )
+            // Enrol the user with this plugin instance (unfortunately return void, no more status).
             $plugin->unenrol_user($instance, $user->id);
-            $result .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user)). "\n";
+            $result .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user)) . "\n";
             $unenrollablecount++;
         }
     }
 
-    //recap final
+    // Recap final.
     $result .= get_string('im:stats_ui', 'local_mass_enroll', $unenrollablecount) . "\n";
+
+    // Trigger event.
+    $event = \local_mass_enroll\event\mass_unenrolment_created::create(
+            array(
+                'objectid' => $course->id,
+                'courseid' => $course->id,
+                'context' => context_course::instance($course->id),
+                'other' => array('info' => get_string('mass_unenroll', 'local_mass_enroll'))
+                )
+            );
+    $event->trigger();
 
     return $result;
 }
 
 /**
- * Enter description here ...
+ * Add a group
+ *
  * @param string $newgroupname
  * @param int $courseid
  * @return int id   Moodle id of inserted record
@@ -319,21 +323,23 @@ function mass_enroll_add_group($newgroupname, $courseid) {
     return groups_create_group($newgroup);
 }
 
-
 /**
- * Enter description here ...
+ * Add a grouping
+ *
  * @param string $newgroupingname
  * @param int $courseid
  * @return int id Moodle id of inserted record
  */
 function mass_enroll_add_grouping($newgroupingname, $courseid) {
-    $newgrouping = new StdClass();
+    $newgrouping = new stdClass();
     $newgrouping->name = $newgroupingname;
     $newgrouping->courseid = $courseid;
     return groups_create_grouping($newgrouping);
 }
 
 /**
+ * Check if a group exists
+ *
  * @param string $name group name
  * @param int $courseid course
  * @return string or false
@@ -343,39 +349,39 @@ function mass_enroll_group_exists($name, $courseid) {
 }
 
 /**
+ * Check if a grouping exists
+ *
  * @param string $name group name
  * @param int $courseid course
  * @return string or false
  */
 function mass_enroll_grouping_exists($name, $courseid) {
     return groups_get_grouping_by_name($courseid, $name);
-
 }
 
 /**
+ * Get a group in a grouping
+ *
  * @param int $gid group ID
  * @param int $gpid grouping ID
  * @return mixed a fieldset object containing the first matching record or false
  */
 function mass_enroll_group_in_grouping($gid, $gpid) {
-     global $DB;
-    $sql =<<<EOF
-   select * from {groupings_groups}
-   where groupingid = ?
-   and groupid = ?
-EOF;
-    $params = array($gpid, $gid);
-    return $DB->get_record_sql($sql,$params,IGNORE_MISSING);
+    global $DB;
+    $conditions = array('groupingid' => $gpid, 'groupid' => $gid);
+    return $DB->get_record('groupings_groups', $conditions, '*', IGNORE_MISSING);
 }
 
 /**
+ * Add a grouping
+ *
  * @param int $gid group ID
  * @param int $gpid grouping ID
  * @return bool|int true or new id
  * @throws dml_exception A DML specific exception is thrown for any errors.
  */
 function mass_enroll_add_group_grouping($gid, $gpid) {
-     global $DB;
+    global $DB;
     $new = new stdClass();
     $new->groupid = $gid;
     $new->groupingid = $gpid;
