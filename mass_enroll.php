@@ -47,7 +47,7 @@ require_capability('local/mass_enroll:enrol', $context);
 // Start making page.
 $strinscriptions = get_string('mass_enroll', 'local_mass_enroll');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url('/local/mass_enroll/mass_enroll.php', array('id' => $id));
+$PAGE->set_url(new moodle_url('/local/mass_enroll/mass_enroll.php', array('id' => $id)));
 $PAGE->set_title($course->fullname . ': ' . $strinscriptions);
 $PAGE->set_heading($course->fullname . ': ' . $strinscriptions);
 
