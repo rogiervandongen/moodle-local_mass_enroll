@@ -92,7 +92,8 @@ class mass_unenrolment_created extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/local/mass_enroll/mass_unenroll.php', array('id' => $this->courseid));
+        global $CFG;
+        return new \moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php', array('id' => $this->courseid));
     }
 
     /**

@@ -28,8 +28,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$plugin->version   = 2015092400;            // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2015092401;            // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2014051200;            // Moodle 2.7 onwards.
 $plugin->component = 'local_mass_enroll';   // Full name of the plugin (used for diagnostics).
 $plugin->maturity  = MATURITY_STABLE;       // Required for registering to Moodle's database of plugins.
-$plugin->release   = '2.7.0 (Build 2015092400)';// Required for registering to Moodle's database of plugins.
+$plugin->release   = '2.7.0 (Build 2015092401)';// Required for registering to Moodle's database of plugins.

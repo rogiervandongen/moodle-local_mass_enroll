@@ -44,7 +44,7 @@ require_capability('local/mass_enroll:unenrol', $context);
 // Start making page.
 $strinscriptions = get_string('mass_unenroll', 'local_mass_enroll');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url(new moodle_url('/local/mass_enroll/mass_unenroll.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php', array('id' => $id)));
 $PAGE->set_title($course->fullname . ': ' . $strinscriptions);
 $PAGE->set_heading($course->fullname . ': ' . $strinscriptions);
 

@@ -47,6 +47,7 @@ function local_mass_enroll_extend_settings_navigation(settings_navigation $navig
  * @return void
  */
 function local_mass_enroll_extends_settings_navigation(settings_navigation $navigation, $context) {
+    global $CFG;
     // If not in a course context, then leave.
     if ($context == null || $context->contextlevel != CONTEXT_COURSE) {
         return;
@@ -64,14 +65,14 @@ function local_mass_enroll_extends_settings_navigation(settings_navigation $navi
     $config = get_config('local_mass_enroll');
     if ((bool)$config->enablemassenrol) {
         if (has_capability('local/mass_enroll:enrol', $context)) {
-            $url = new moodle_url('/local/mass_enroll/mass_enroll.php', array('id' => $context->instanceid));
+            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_enroll.php', array('id' => $context->instanceid));
             $useradminnode->add(get_string('mass_enroll', 'local_mass_enroll'), $url,
                     navigation_node::TYPE_SETTING, null, 'massenrols', new pix_icon('i/admin', ''));
         }
     }
     if ((bool)$config->enablemassunenrol) {
         if (has_capability('local/mass_enroll:unenrol', $context)) {
-            $url = new moodle_url('/local/mass_enroll/mass_unenroll.php', array('id' => $context->instanceid));
+            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php', array('id' => $context->instanceid));
             $useradminnode->add(get_string('mass_unenroll', 'local_mass_enroll'), $url,
                     navigation_node::TYPE_SETTING, null, 'massunenrols', new pix_icon('i/admin', ''));
         }

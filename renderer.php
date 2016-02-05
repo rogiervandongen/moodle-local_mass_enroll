@@ -49,7 +49,7 @@ class local_mass_enroll_renderer extends \plugin_renderer_base {
         $course = $this->page->course;
         $context = $this->page->context;
 
-        $mform = new mass_enroll_form('/local/mass_enroll/mass_enroll.php', array(
+        $mform = new mass_enroll_form(new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_enroll.php'), array(
             'course' => $course,
             'context' => $context
         ));
@@ -120,7 +120,7 @@ class local_mass_enroll_renderer extends \plugin_renderer_base {
         $course = $this->page->course;
         $context = $this->page->context;
 
-        $mform = new mass_unenroll_form('/local/mass_enroll/mass_unenroll.php', array(
+        $mform = new mass_unenroll_form(new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php'), array(
             'course' => $course,
             'context' => $context
         ));
@@ -189,15 +189,16 @@ class local_mass_enroll_renderer extends \plugin_renderer_base {
      * @return string
      */
     protected function get_tabs($context, $selected, $params = array()) {
+        global $CFG;
         $tabs = array();
 
         if (has_capability('local/mass_enroll:enrol', $context)) {
-            $enrol = new \moodle_url('/local/mass_enroll/mass_enroll.php', $params);
+            $enrol = new \moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_enroll.php', $params);
             $tabs[] = new \tabobject('mass_enroll', $enrol, get_string('mass_enroll', 'local_mass_enroll'));
         }
 
         if (has_capability('local/mass_enroll:unenrol', $context)) {
-            $unenrol = new \moodle_url('/local/mass_enroll/mass_unenroll.php', $params);
+            $unenrol = new \moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php', $params);
             $tabs[] = new \tabobject('mass_unenroll', $unenrol, get_string('mass_unenroll', 'local_mass_enroll'));
         }
 
