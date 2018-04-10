@@ -154,7 +154,12 @@ function mass_enroll($cir, $course, $context, $data) {
             $enrollablecount++;
         }
 
-        $group = str_replace('"', '', trim($fields[1]));
+        if (empty($fields[1])) {
+            $group = null;
+        }
+        else {
+            $group = str_replace('"', '', trim($fields[1]));
+        }
         // 2nd column?
         if (empty($group)) {
             $result .= "\n";
