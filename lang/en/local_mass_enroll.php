@@ -40,7 +40,7 @@ $string['mass_enroll_info'] = '
 With this option you are going to enrol a list of known users from a file with one account per line
 </p>
 <p>
-<b> The firstline </b> the empty lines or unknown accounts will be skipped. </p>
+<b>The firstline</b>, empty lines or unknown accounts will be skipped. </p>
 <p>
 The file may contains several columns, separated by a comma, a semi-column or a tabulation.
 <br/>
@@ -240,7 +240,7 @@ You should prepare it from your usual spreadsheet program from an official lists
 by exporting the course gradebook to CSV, or use the very same file as the one used to mass enrol users. (*)</p>
 
 <p>
-<b> The first one must contains a unique account identifier </b>: idnumber (by default) login or email  of the target user. (**). </p>
+<b> The first one must contains a unique account identifier </b>: idnumber (by default) login or email  of the target user. (**)</p>
 
 <p>
 All other columns will be ignored. </p>
