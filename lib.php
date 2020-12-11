@@ -156,8 +156,7 @@ function mass_enroll($cir, $course, $context, $data) {
 
         if (empty($fields[1])) {
             $group = null;
-        }
-        else {
+        } else {
             $group = str_replace('"', '', trim($fields[1]));
         }
         // 2nd column?

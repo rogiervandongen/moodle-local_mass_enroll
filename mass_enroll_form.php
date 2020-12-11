@@ -75,7 +75,7 @@ class mass_enroll_form extends moodleform {
 
         $roles = get_assignable_roles($context);
         $mform->addElement('select', 'roleassign', get_string('roleassign', 'local_mass_enroll'), $roles);
-        $studentrole = $DB->get_record('role', array('archetype' => 'student'));
+        $studentrole = $DB->get_record('role', array('archetype' => 'student'), "*", IGNORE_MULTIPLE);
         $mform->setDefault('roleassign', $studentrole->id);
 
         $ids = array(
