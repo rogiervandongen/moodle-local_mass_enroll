@@ -256,15 +256,21 @@ function mass_unenroll($cir, $course, $context, $data) {
     $useridfield = $data->firstcolumn;
     $unenrollablecount = 0;
 
-    $plugin = enrol_get_plugin('manual');
+    $manualenrolplugin = enrol_get_plugin('manual');
+    $extraenrolplugins = [];
+    foreach ($data->extramethods as $enrol) {
+        $extraenrolplugins[$enrol] = enrol_get_plugin($enrol);
+    }
+    $extrainstances = mass_enroll_find_instances($course->id, array_keys($extraenrolplugins));
+
     // Moodle 2.x enrolment and role assignment are different.
     // Assure course has manual enrolment plugin instance we are going to use.
     // Only one instance is allowed; see enrol/manual/lib.php get_new_instance().
-    $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
-    if (empty($instance)) {
+    $manualinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
+    if (empty($manualinstance)) {
         // Only add an enrol instance to the course if non-existent.
-        $enrolid = $plugin->add_instance($course);
-        $instance = $DB->get_record('enrol', array('id' => $enrolid));
+        $enrolid = $manualenrolplugin->add_instance($course);
+        $manualinstance = $DB->get_record('enrol', array('id' => $enrolid));
     }
 
     // Init csv import helper.
@@ -285,14 +291,20 @@ function mass_unenroll($cir, $course, $context, $data) {
             continue;
         }
         // Already enroled?
-        if (!$ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
-            // Weird, user not enrolled.
-            $result .= get_string('im:not_in', 'local_mass_enroll', fullname($user)) . "\n";
-        } else {
-            // Enrol the user with this plugin instance (unfortunately return void, no more status).
-            $plugin->unenrol_user($instance, $user->id);
+        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $manualinstance->id, 'userid' => $user->id))) {
+            // Unenrol the user with this plugin instance (unfortunately return void, no more status).
+            $manualenrolplugin->unenrol_user($manualinstance, $user->id);
             $result .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user)) . "\n";
             $unenrollablecount++;
+        } else if ($instance = mass_enroll_find_enrolment($user, $extrainstances)) {
+            // Try to locate in other instances.
+            $enrolplugin = $extraenrolplugins[$instance->enrol];
+            $enrolplugin->unenrol_user($instance, $user->id);
+            $result .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user)) . "\n";
+            $unenrollablecount++;
+        } else {
+            // Weird, user not enrolled.
+            $result .= get_string('im:not_in', 'local_mass_enroll', fullname($user)) . "\n";
         }
     }
 
@@ -311,6 +323,41 @@ function mass_unenroll($cir, $course, $context, $data) {
     $event->trigger();
 
     return $result;
+}
+
+/**
+ * Find enrolment instances based on given array of enrolment methods
+ *
+ * @param int $courseid
+ * @param array $extramethods extra enrolment plugin names
+ * @return array
+ */
+function mass_enroll_find_instances($courseid, array $extramethods) {
+    global $DB;
+    $result = [];
+    if (empty($extramethods)) {
+        return $result;
+    }
+    list($insql, $params) = $DB->get_in_or_equal($extramethods, SQL_PARAMS_NAMED, 'enrol', true);
+    $params['courseid'] = $courseid;
+    return array_values($DB->get_records_sql('SELECT * FROM {enrol} WHERE courseid = :courseid AND enrol ' . $insql, $params));
+}
+
+/**
+ * Find user enrolment instance for a specific combination of user/enrolment.
+ *
+ * @param stdClass $user
+ * @param array $instances
+ * @return stdClass|null instance or null if not located.
+ */
+function mass_enroll_find_enrolment($user, array $instances) {
+    global $DB;
+    foreach ($instances as $instance) {
+        if ($DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+            return $instance;
+        }
+    }
+    return null;
 }
 
 /**
@@ -392,4 +439,44 @@ function mass_enroll_add_group_grouping($gid, $gpid) {
     $new->groupingid = $gpid;
     $new->timeadded = time();
     return $DB->insert_record('groupings_groups', $new);
+}
+
+/**
+ * Load list of enrolment methods (except manual, this is defaulted).
+ *
+ * return array list of enrolment methods.
+ */
+function local_mass_enroll_get_enrolment_methods() {
+    global $CFG;
+    require_once($CFG->dirroot . '/lib/enrollib.php');
+    $list = enrol_get_plugins(false);
+    $methods = [];
+    foreach ($list as $instance) {
+        $enrol = $instance->get_name();
+        if ($enrol == 'manual') {
+            continue; // This is a forced default.
+        }
+        $methods[$enrol] = get_string('pluginname', 'enrol_' . $enrol);
+    }
+    return $methods;
+}
+
+/**
+ * Load list of course enrolment methods (except manual, this is defaulted).
+ *
+ * @param int $courseid
+ * @return array list of enrolment methods.
+ */
+function local_mass_enroll_get_course_enrolment_methods($courseid) {
+    $config = get_config('local_mass_enroll');
+    if (empty($config->allowedunenrolmentmethods)) {
+        return [];
+    }
+    $extraenrolplugins = explode(',', $config->allowedunenrolmentmethods);
+    $instances = mass_enroll_find_instances($courseid, $extraenrolplugins);
+    $result = [];
+    foreach ($instances as $instance) {
+        $result[$instance->enrol] = get_string('pluginname', 'enrol_'.$instance->enrol);
+    }
+    return $result;
 }

@@ -30,6 +30,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
+require_once(__DIR__ . '/lib.php');
 
 /**
  * Bulk unenrolment form
@@ -81,11 +82,39 @@ class mass_unenroll_form extends moodleform {
         $mform->addElement('selectyesno', 'mailreport', get_string('mailreport', 'local_mass_enroll'));
         $mform->setDefault('mailreport', (int)$config->mailreportdefault);
 
+        $methods = local_mass_enroll_get_course_enrolment_methods($course->id);
+        if (!empty($methods) && $config->enableextraunenrolmentplugins) {
+            $mform->addElement('advcheckbox', 'addextraenrolments',
+                    get_string('enableextraunenrolmentplugins', 'local_mass_enroll'));
+            $mform->setDefault('addextraenrolments', 0);
+            $mform->addHelpButton('addextraenrolments', 'enableextraunenrolmentplugins', 'local_mass_enroll');
+
+            $emel = $mform->addElement('select', 'extramethods', get_string('allowedunenrolmentmethods', 'local_mass_enroll'),
+                    $methods, ['size' => min(10, max(1, count($methods)))]);
+            $emel->setMultiple(true);
+            $mform->setDefault('extramethods', explode(',', $config->allowedunenrolmentmethods));
+            $mform->addHelpButton('extramethods', 'allowedunenrolmentmethods', 'local_mass_enroll');
+            $mform->hideIf('extramethods', 'addextraenrolments', 'eq', 0);
+        }
+
         // Buttons.
         $this->add_action_buttons(true, get_string('unenroll', 'local_mass_enroll'));
 
         $mform->addElement('hidden', 'id', $course->id);
         $mform->setType('id', PARAM_INT);
+    }
+
+    /**
+     * Get data
+     *
+     * @return stdClass;
+     */
+    public function get_data() {
+        $data = parent::get_data();
+        if (!is_null($data) && empty($data->extramethods)) {
+            $data->extramethods = [];
+        }
+        return $data;
     }
 
     /**

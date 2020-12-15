@@ -42,7 +42,7 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/role:assign'
     ),
-    // Not given by default to editingteacher ( life is tough).
+    // Not given by default to editingteacher (life is tough).
     'local/mass_enroll:unenrol' => array(
         'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',

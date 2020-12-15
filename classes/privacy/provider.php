@@ -14,10 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_mass_enroll\privacy;
+/**
+ * The privacy provider.
+ *
+ * File         provider.php
+ * Encoding     UTF-8
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+namespace local_mass_enroll\privacy;
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * The privacy provider.
+ *
+ * @package     local_mass_enroll
+ *
+ * @copyright   2012 onwards Patrick Pollet
+ * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class provider implements
-    # This plugin does not store any personal user data.
+    // This plugin does not store any personal user data.
     \core_privacy\local\metadata\null_provider {
 
     /**

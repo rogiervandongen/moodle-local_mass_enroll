@@ -274,3 +274,10 @@ $string['enablemassunenrol_help'] = 'Check this option to allow extension for ma
 $string['localmassenrollextensions'] = 'Menu extension settings';
 $string['mailreportdefault'] = 'Send reports default';
 $string['mailreportdefault_help'] = 'Configure the default setting for sending reports for the bulk (un)enrolment forms';
+$string['allowedunenrolmentmethods'] = 'Allowed extra unenrolments';
+$string['allowedunenrolmentmethods_help'] = 'Indicate the default allowed enrolment methods that can be used for mass unenrolment.<br/>
+Please note "manual" cannot be configured as this is the default and will always be processed.<br/>
+<i>Be careful which methods you select, because it might raise questions! For example, you might <strong>not</strong> want to remove enrolments that were paid for (paypal, stripe, classicpay, etc etc).</i>
+';
+$string['enableextraunenrolmentplugins'] = 'Allow extra unenrolment plugins?';
+$string['enableextraunenrolmentplugins_help'] = 'Use this if you wish to allow for unenrolment of other plugins than "manual"';
