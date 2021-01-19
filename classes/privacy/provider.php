@@ -39,9 +39,8 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements
+class provider implements \core_privacy\local\metadata\null_provider {
     // This plugin does not store any personal user data.
-    \core_privacy\local\metadata\null_provider {
 
     /**
      * Get the language string identifier with the component's language
@@ -49,8 +48,8 @@ class provider implements
      *
      * @return  string
      */
-    public static function get_reason()/* : string*/ {
-        return 'privacy:null_reason';
+    public static function get_reason() : string {
+        return 'privacy:metadata';
     }
 
 }
