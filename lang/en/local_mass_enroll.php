@@ -281,3 +281,4 @@ Please note "manual" cannot be configured as this is the default and will always
 ';
 $string['enableextraunenrolmentplugins'] = 'Allow extra unenrolment plugins?';
 $string['enableextraunenrolmentplugins_help'] = 'Use this if you wish to allow for unenrolment of other plugins than "manual"';
+$string['privacy:metadata'] = 'The Mass Enrol local plugin does not store any personal data';
