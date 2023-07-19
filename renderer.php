@@ -72,9 +72,9 @@ class local_mass_enroll_renderer extends \plugin_renderer_base {
 
             $returnurl = $this->page->url;
             if ($readcount === false) {
-                print_error('csvloaderror', '', $returnurl);
+                throw new \moodle_exception('csvloaderror', '', $returnurl);
             } else if ($readcount == 0) {
-                print_error('csvemptyfile', 'error', $returnurl);
+                throw new \moodle_exception('csvemptyfile', 'error', $returnurl);
             }
 
             $result = mass_enroll($cir, $course, $context, $data);
@@ -143,9 +143,9 @@ class local_mass_enroll_renderer extends \plugin_renderer_base {
 
             $returnurl = $this->page->url;
             if ($readcount === false) {
-                print_error('csvloaderror', '', $returnurl);
+                throw new \moodle_exception('csvloaderror', '', $returnurl);
             } else if ($readcount == 0) {
-                print_error('csvemptyfile', 'error', $returnurl);
+                throw new \moodle_exception('csvemptyfile', 'error', $returnurl);
             }
 
             $result = mass_unenroll($cir, $course, $context, $data);
