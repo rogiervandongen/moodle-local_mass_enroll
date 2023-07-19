@@ -33,7 +33,7 @@ require(dirname(dirname(dirname(__FILE__))) . '/config.php');
 // Get params.
 $id = required_param('id', PARAM_INT);
 if (!$course = $DB->get_record('course', array('id' => $id))) {
-    error("Course is misconfigured");
+    throw new \moodle_exception("Course is misconfigured");
 }
 
 // Security and access check.
