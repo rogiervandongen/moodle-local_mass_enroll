@@ -102,6 +102,8 @@ function mass_enroll($cir, $course, $context, $data) {
     $createdgroups = '';
     $createdgroupings = '';
 
+    $checknonmanualenrolments = get_config('local_mass_enroll', 'checknonmanualenrolments');
+
     $role = $DB->get_record('role', array('id' => $roleid));
 
     $result .= get_string('im:using_role', 'local_mass_enroll', $role->name) . "\n";
@@ -136,7 +138,10 @@ function mass_enroll($cir, $course, $context, $data) {
         }
         // Already enroled?
         // We DO NOT support multiple roles in a course.
-        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+
+        if ($checknonmanualenrolments && user_has_role_assignment($user->id, $roleid, $context->id)) {
+            $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
+        } else if ($DB->record_exists('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
             $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else {
             // Take care of timestart/timeend in course settings.
