@@ -47,10 +47,28 @@ require_capability('local/mass_enroll:enrol', $context);
 // Start making page.
 $strinscriptions = get_string('mass_enroll', 'local_mass_enroll');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_enroll.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/massenrol.php', array('id' => $id)));
 $PAGE->set_title($course->fullname . ': ' . $strinscriptions);
 $PAGE->set_heading($course->fullname . ': ' . $strinscriptions);
 
+$course = $PAGE->course;
 $renderer = $PAGE->get_renderer('local_mass_enroll');
-echo $renderer->page_mass_enrol();
-exit;
+
+$form = new \local_mass_enroll\local\forms\massenrol(new moodle_url($PAGE->url), array(
+    'course' => $course,
+    'context' => $context
+));
+$result = $form->process();
+
+if ($result) {
+    \core\notification::success(get_string('process:massenrol:success', 'local_mass_enroll'));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
+} else {
+    echo $renderer->header();
+    echo $renderer->get_tabs($context, 'massenrol', array('id' => $course->id));
+    echo $renderer->heading_with_help($strinscriptions, 'mass_enroll', 'local_mass_enroll',
+                'icon', get_string('mass_enroll', 'local_mass_enroll'));
+    echo $renderer->box(get_string('mass_enroll_info', 'local_mass_enroll'), 'center');
+    echo $form->render();
+    echo $renderer->footer();
+}

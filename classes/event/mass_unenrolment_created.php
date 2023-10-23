@@ -28,7 +28,6 @@
  */
 
 namespace local_mass_enroll\event;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * The mass_unenrolment_created event class.

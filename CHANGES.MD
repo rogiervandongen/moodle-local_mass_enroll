@@ -1,3 +1,11 @@
+Version 4.0.0 (build 2023100100)
+* Full overhaul of code
+* Changed CSV processor
+* Resolved issue with groupings
+* Now allows for more fine grained column mapping
+* Tested up until Moodle 4.3DEV (build 20230913)
+* Special thanks to Hogeschool Inholland for funding release 4.0.0!
+
 Version 3.6.0 (build 2018082402)
 * Allow for specific choices of enrolment methods methods when unenrolling (manual is always processed).
   This is an addition for issue #4 as requested/explained by Wiebke.

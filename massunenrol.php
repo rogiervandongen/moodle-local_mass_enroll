@@ -15,9 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mass unenrol
+ * A bulk enrolment plugin allowing teachers to enrol accounts to their courses, optionally adding every user to a group.
  *
- * File         mass_unenroll.php
+ * Version for Moodle 1.9.x courtesy of Patrick POLLET & Valery FREMAUX  France, February 2010
+ * Version for Moodle 2.x by pp@patrickpollet.net March 2012
+ *
+ * File         mass_enroll.php
  * Encoding     UTF-8
  *
  * @package     local_mass_enroll
@@ -42,12 +45,29 @@ $context = context_course::instance($course->id);
 require_capability('local/mass_enroll:unenrol', $context);
 
 // Start making page.
-$strinscriptions = get_string('mass_unenroll', 'local_mass_enroll');
+$strinscriptions = get_string('mass_enroll', 'local_mass_enroll');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/mass_unenroll.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/massunenrol.php', array('id' => $id)));
 $PAGE->set_title($course->fullname . ': ' . $strinscriptions);
 $PAGE->set_heading($course->fullname . ': ' . $strinscriptions);
 
+$course = $PAGE->course;
 $renderer = $PAGE->get_renderer('local_mass_enroll');
-echo $renderer->page_mass_unenrol();
-exit;
+$form = new \local_mass_enroll\local\forms\massunenrol(new moodle_url($PAGE->url), array(
+    'course' => $course,
+    'context' => $context
+));
+$result = $form->process();
+
+if ($result) {
+    \core\notification::success(get_string('process:massunenrol:success', 'local_mass_enroll'));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
+}
+
+echo $renderer->header();
+echo $renderer->get_tabs($context, 'massunenrol', array('id' => $course->id));
+echo $renderer->heading_with_help($strinscriptions, 'mass_unenroll', 'local_mass_enroll',
+                'icon', get_string('mass_unenroll', 'local_mass_enroll'));
+echo $renderer->box(get_string('mass_unenroll_info', 'local_mass_enroll'), 'center');
+echo $form->render();
+echo $renderer->footer();

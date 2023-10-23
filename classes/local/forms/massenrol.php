@@ -26,10 +26,7 @@
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->libdir . '/formslib.php');
+namespace local_mass_enroll\local\forms;
 
 /**
  * Bulk enrolment form
@@ -40,7 +37,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mass_enroll_form extends moodleform {
+class massenrol extends base {
 
     /**
      * Form definition
@@ -51,7 +48,7 @@ class mass_enroll_form extends moodleform {
         $mform = & $this->_form;
         $course = $this->_customdata['course'];
         $context = $this->_customdata['context'];
-        $config = get_config('local_mass_enroll');
+        $this->config = get_config('local_mass_enroll');
 
         $mform->addElement('header', 'general', ''); // Fill in the data depending on page params.
         // Later using set_data.
@@ -59,32 +56,15 @@ class mass_enroll_form extends moodleform {
 
         $mform->addRule('attachment', null, 'required');
 
-        $choices = csv_import_reader::get_delimiter_list();
-        $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
-        if (array_key_exists('cfg', $choices)) {
-            $mform->setDefault('delimiter_name', 'cfg');
-        } else if (get_string('listsep', 'langconfig') == ';') {
-            $mform->setDefault('delimiter_name', 'semicolon');
-        } else {
-            $mform->setDefault('delimiter_name', 'comma');
-        }
+        $this->add_delimiter_element();
+        $this->add_encoding_element();
+        $this->add_enclosure_element();
 
-        $choices = \core_text::get_encodings();
-        $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
-        $mform->setDefault('encoding', 'UTF-8');
+        $mform->addElement('header', 'mappings', get_string('mappings', 'local_mass_enroll'));
+        $this->add_mapping_elements();
 
-        $roles = get_assignable_roles($context);
-        $mform->addElement('select', 'roleassign', get_string('roleassign', 'local_mass_enroll'), $roles);
-        $studentrole = $DB->get_record('role', array('archetype' => 'student'), "*", IGNORE_MULTIPLE);
-        $mform->setDefault('roleassign', $studentrole->id);
-
-        $ids = array(
-            'idnumber' => get_string('idnumber', 'local_mass_enroll'),
-            'username' => get_string('username', 'local_mass_enroll'),
-            'email' => get_string('email')
-        );
-        $mform->addElement('select', 'firstcolumn', get_string('firstcolumn', 'local_mass_enroll'), $ids);
-        $mform->setDefault('firstcolumn', 'idnumber');
+        $mform->addElement('header', 'other', get_string('other', 'local_mass_enroll'));
+        $this->add_roles_element();
 
         $mform->addElement('selectyesno', 'creategroups', get_string('creategroups', 'local_mass_enroll'));
         $mform->setDefault('creategroups', 1);
@@ -93,13 +73,16 @@ class mass_enroll_form extends moodleform {
         $mform->setDefault('creategroupings', 1);
 
         $mform->addElement('selectyesno', 'mailreport', get_string('mailreport', 'local_mass_enroll'));
-        $mform->setDefault('mailreport', (int)$config->mailreportdefault);
+        $mform->setDefault('mailreport', (int)$this->config->mailreportdefault);
 
         // Buttons.
         $this->add_action_buttons(true, get_string('enroll', 'local_mass_enroll'));
 
         $mform->addElement('hidden', 'id', $course->id);
         $mform->setType('id', PARAM_INT);
+
+        $this->_form->setExpanded('mappings', true, true);
+        $this->_form->setExpanded('other', true, true);
     }
 
     /**
@@ -112,6 +95,56 @@ class mass_enroll_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         return $errors;
+    }
+
+    /**
+     * Process upload
+     *
+     * @return boolean
+     */
+    public function process() {
+        $data = $this->get_data();
+
+        // If we have no data, we didn't pass validation.
+        if (empty($data)) {
+            return false;
+        }
+
+        $mappings = $this->get_mappings($data);
+        $options = [
+            'encoding' => $data->encoding,
+            'delimitername' => $data->delimitername,
+            'enclosure' => $data->enclosure ?? '"',
+            'defaultrole' => $data->roleassign,
+            'creategroups' => (bool)$data->creategroups,
+            'creategroupings' => (bool)$data->creategroupings,
+        ];
+        $content = $this->get_file_content('attachment');
+
+        $csvprocessor = new \local_mass_enroll\local\processor\massenrol\csv($content, false, $options);
+        $csvprocessor->set_mappings($mappings);
+        $csvprocessor->set_course($this->_customdata['course']);
+        $csvprocessor->set_mailreport((bool)$data->mailreport);
+
+        $result = $csvprocessor->process();
+
+        return $result;
+    }
+
+    /**
+     * Get column mappings
+     *
+     * @param stdClass $data
+     * @return array
+     */
+    protected function get_mappings($data) {
+        $mappings = [];
+        foreach ($data->columns as $index => $mapping) {
+            if ($mapping !== '#') {
+                $mappings[$index] = $mapping;
+            }
+        }
+        return $mappings;
     }
 
 }

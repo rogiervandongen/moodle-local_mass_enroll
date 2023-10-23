@@ -31,6 +31,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ . '/lib.php');
+require_once($CFG->libdir . '/accesslib.php');
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('localsettingmassenroll', new lang_string('massenrollsettings', 'local_mass_enroll'));
@@ -39,19 +40,35 @@ if ($hassiteconfig) {
         get_string('localmassenrolldefaults', 'local_mass_enroll'),
         ''));
 
+
+    $roles = role_get_names(null, ROLENAME_ALIAS, true);
+    $settings->add(new admin_setting_configselect('local_mass_enroll/defaultrole',
+        get_string('defaultrole', 'local_mass_enroll'),
+        get_string('defaultrole_help', 'local_mass_enroll'),
+        5, $roles));
+
     $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('local_mass_enroll/mailreportdefault',
         get_string('mailreportdefault', 'local_mass_enroll'),
-        get_string('mailreportdefault_help', 'local_mass_enroll'), 1, $yesno));
+        get_string('mailreportdefault_help', 'local_mass_enroll'),
+        1,
+        $yesno));
+
+    $settings->add(new admin_setting_configcheckbox('local_mass_enroll/checknonmanualenrolments',
+        get_string('checknonmanualenrolments', 'local_mass_enroll'),
+        get_string('checknonmanualenrolments_help', 'local_mass_enroll'), 0));
 
     $settings->add(new admin_setting_configcheckbox('local_mass_enroll/enableextraunenrolmentplugins',
         get_string('enableextraunenrolmentplugins', 'local_mass_enroll'),
-        get_string('enableextraunenrolmentplugins_help', 'local_mass_enroll'), 0));
+        get_string('enableextraunenrolmentplugins_help', 'local_mass_enroll'),
+        0));
 
     $emethods = local_mass_enroll_get_enrolment_methods();
     $settings->add(new admin_setting_configmultiselect('local_mass_enroll/allowedunenrolmentmethods',
         get_string('allowedunenrolmentmethods', 'local_mass_enroll'),
-        get_string('allowedunenrolmentmethods_help', 'local_mass_enroll'), [], $emethods));
+        get_string('allowedunenrolmentmethods_help', 'local_mass_enroll'),
+        [],
+        $emethods));
 
     $settings->add(new admin_setting_heading('localmassenrollextensions',
         get_string('localmassenrollextensions', 'local_mass_enroll'),

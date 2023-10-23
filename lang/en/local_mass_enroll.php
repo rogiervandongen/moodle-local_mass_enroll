@@ -36,38 +36,19 @@ $string['mass_enroll:unenrol'] = 'Unenrol users from a course by CSV file';
 $string['mass_enroll'] = 'Bulk enrolments';
 $string['mass_unenroll'] = 'Bulk unenrolments';
 $string['mass_enroll_info'] = '
-<p>
-With this option you are going to enrol a list of known users from a file with one account per line
-</p>
-<p>
-<b>The firstline</b>, empty lines or unknown accounts will be skipped. </p>
-<p>
-The file may contains several columns, separated by a comma, a semi-column or a tabulation.
-<br/>
-<b>The first one must contains a unique account identifier : idnumber (by default) login or email  </b> of the target user. <br/>
-
-The second <b>if present,</b> contains the group name in wich you want that user be be added. <br/>
-
-You may repeat this operation at will without damages, for example if you forgot the group for some users.
-</p>
+<p>With this option you are going to enrol a list of known users from a file with one account per line</p>
+<p>Empty lines or unknown accounts will be skipped.</p>
+<p>The file may contains several columns, separated by a comma, a semi-column or a tabulation.</p>
+<p>Every relevant column <b>must</b> be mapped; see the "Mappings" section in the form below.</p>
+<p>You may repeat this operation at will without damages, for example if you forgot the group for some users.</p>
 ';
 
 $string['mass_unenroll_info'] = '
-<p>
-With this option you are going to unenrol a list on users from a file with one account per line.
-</p>
-<p>
-<b> The firstline </b> the empty lines or unknown accounts will be skipped. </p>
-</p>
-<p>
-The file may contains several columns, separated by a comma, a semi-column or a tabulation.
-<br/>
-<b>The first one must contains a unique account identifier : idnumber (by default) login or email  </b> of the target user. <br/>
-
-Other columns, if present, will be ignored. Thus the file can be the same as the one user to mass enrol users into this course.<br/>
-
-You may repeat this operation at will without damages, for example if you forgot some users to unenroll.
-</p>
+<p>With this option you are going to unenrol a list on users from a file with one account per line.</p>
+<p>Empty lines or unknown accounts will be skipped.</p>
+<p>The file may contains several columns, separated by a comma, a semi-column or a tabulation.</p>
+<p>Every relevant column <b>must</b> be mapped; see the "Mappings" section in the form below.</p>
+<p>You may repeat this operation at will without damages, for example if you forgot the group for some users.</p>
 ';
 
 $string['enroll'] = 'Enrol them to my course';
@@ -75,7 +56,7 @@ $string['unenroll'] = 'Unenrol them from my course';
 
 $string['mailreport'] = 'Send me a mail report';
 $string['creategroups'] = 'Create group(s) if needed';
-$string['creategroupings'] = 'Create  grouping(s) if needed';
+$string['creategroupings'] = 'Create grouping(s) if needed';
 $string['firstcolumn'] = 'First column contains';
 $string['roleassign'] = 'Role to assign';
 $string['idnumber'] = 'Id number';
@@ -107,12 +88,12 @@ $string['im:not_in'] = '{$a} NOT enroled ';
 $string['im:unenrolled_ok'] = '{$a} unenroled ';
 $string['im:error_out'] = 'error unenroling {$a}';
 
-$string['im:error_addg'] = 'error adding group {$a->groupe}  to course {$a->courseid} ';
+$string['im:error_addg'] = 'error adding group {$a->group} to course {$a->courseid} ';
 $string['im:error_g_unknown'] = 'error unkown group {$a} ';
-$string['im:error_add_grp'] = 'error adding grouping {$a->groupe} to course {$a->courseid}';
-$string['im:error_add_g_grp'] = 'error adding group {$a->groupe} to grouping {$a->groupe}';
-$string['im:and_added_g'] = ' and added to Moodle\'s  group  {$a}';
-$string['im:error_adding_u_g'] = 'error adding to group  {$a}';
+$string['im:error_add_grp'] = 'error adding grouping {$a->grouping} to course {$a->courseid}';
+$string['im:error_add_g_grp'] = 'error adding group {$a->group} to grouping {$a->grouping}';
+$string['im:and_added_g'] = ' and added to Moodle\'s group {$a}';
+$string['im:error_adding_u_g'] = 'error adding to group {$a}';
 $string['im:already_in_g'] = ' already in group {$a}';
 $string['im:stats_i'] = '{$a} enroled';
 $string['im:stats_ui'] = '{$a} unenroled';
@@ -136,7 +117,7 @@ You should prepare it from your usual spreadsheet program from official lists of
 and add if needed a column with groups to which you want these users to be added. Finally export it as CSV. (*)</p>
 
 <p>
-<b> The first one must contains a unique account identifier </b>: idnumber (by default) login or email  of the target user. (**). </p>
+<b> The first one must contains a unique account identifier </b>: idnumber (by default) login or email of the target user. (**). </p>
 
 <p>
 The second <b>if present,</b> contains the group name in wich you want that user to be added. </p>
@@ -267,10 +248,12 @@ You may repeat this operation at will without dammages, for example if you forgo
 ';
 $string['massenrollsettings'] = 'Mass enrol settings';
 $string['localmassenrolldefaults'] = 'Mass enrol default settings';
-$string['enablemassenrol'] = 'Allow mass enrolment from course administration';
-$string['enablemassenrol_help'] = 'Check this option to allow extension for mass enrolment in the course administration tree';
-$string['enablemassunenrol'] = 'Allow mass unenrolment from course administration';
-$string['enablemassunenrol_help'] = 'Check this option to allow extension for mass unenrolment in the course administration tree';
+$string['enablemassenrol'] = 'Allow mass enrolment from course participant menu?';
+$string['enablemassenrol_help'] = 'Check this option to allow extension for mass enrolment in the course administration tree.
+Please be aware the link can now be found under the tertiary menu in the "Participants" section';
+$string['enablemassunenrol'] = 'Allow mass unenrolment from course participant menu?';
+$string['enablemassunenrol_help'] = 'Check this option to allow extension for mass unenrolment in the course administration tree
+Please be aware the link can now be found under the tertiary menu in the "Participants" section';
 $string['localmassenrollextensions'] = 'Menu extension settings';
 $string['mailreportdefault'] = 'Send reports default';
 $string['mailreportdefault_help'] = 'Configure the default setting for sending reports for the bulk (un)enrolment forms';
@@ -282,3 +265,12 @@ Please note "manual" cannot be configured as this is the default and will always
 $string['enableextraunenrolmentplugins'] = 'Allow extra unenrolment plugins?';
 $string['enableextraunenrolmentplugins_help'] = 'Use this if you wish to allow for unenrolment of other plugins than "manual"';
 $string['privacy:metadata'] = 'The Mass Enrol local plugin does not store any personal data';
+$string['mapping:column'] = 'Column {$a}';
+$string['mappings'] = 'Mappings';
+$string['other'] = 'Other settings';
+$string['defaultrole'] = 'Default role to assign';
+$string['defaultrole_help'] = 'Provide the default role to assign when not present in the CSV';
+$string['checknonmanualenrolments'] = 'Check other enrolments than manual?';
+$string['checknonmanualenrolments_help'] = 'When enabled, role assignments from enrolment methods other than manual will be checked, meaning the target role can be applied from any enrolment plugin.
+If the user has the target role from any enrolment plugin, processing will be skipped';
+$string['enclosure'] = 'CSV Enclosure';
