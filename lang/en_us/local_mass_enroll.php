@@ -88,10 +88,10 @@ $string['im:not_in'] = '{$a} NOT enrolled ';
 $string['im:unenrolled_ok'] = '{$a} unenrolled ';
 $string['im:error_out'] = 'error unenrolling {$a}';
 
-$string['im:error_addg'] = 'error adding group {$a->groupe}  to course {$a->courseid} ';
+$string['im:error_addg'] = 'error adding group {$a->group}  to course {$a->courseid} ';
 $string['im:error_g_unknown'] = 'error unkown group {$a} ';
-$string['im:error_add_grp'] = 'error adding grouping {$a->groupe} to course {$a->courseid}';
-$string['im:error_add_g_grp'] = 'error adding group {$a->groupe} to grouping {$a->groupe}';
+$string['im:error_add_grp'] = 'error adding grouping {$a->grouping} to course {$a->courseid}';
+$string['im:error_add_g_grp'] = 'error adding group {$a->group} to grouping {$a->grouping}';
 $string['im:and_added_g'] = ' and added to Moodle\'s  group  {$a}';
 $string['im:error_adding_u_g'] = 'error adding to group  {$a}';
 $string['im:already_in_g'] = ' already in group {$a}';

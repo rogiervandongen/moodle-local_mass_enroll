@@ -104,10 +104,10 @@ $string['im:unenrolled_ok'] = '{$a} disiscritto ';
 $string['im:error_out'] = 'errore nel disiscrivere {$a}';
 
 
-$string['im:error_addg'] = 'errore nell\'aggiungere il gruppo {$a->groupe} al corso {$a->courseid} ';
+$string['im:error_addg'] = 'errore nell\'aggiungere il gruppo {$a->group} al corso {$a->courseid} ';
 $string['im:error_g_unknown'] = 'errore, gruppo {$a} sconosciuto';
-$string['im:error_add_grp'] = 'errore nell\'aggiungere il raggruppamento {$a->groupe} al corso {$a->courseid}';
-$string['im:error_add_g_grp'] = 'errore nell\'aggiungere il gruppo {$a->groupe} al raggruppamento {$a->groupe}';
+$string['im:error_add_grp'] = 'errore nell\'aggiungere il raggruppamento {$a->grouping} al corso {$a->courseid}';
+$string['im:error_add_g_grp'] = 'errore nell\'aggiungere il gruppo {$a->group} al raggruppamento {$a->grouping}';
 $string['im:and_added_g'] = ' e aggiunto al gruppo Moodle {$a}';
 $string['im:error_adding_u_g'] = 'impossibile aggiungere al gruppo {$a}';
 $string['im:already_in_g'] = ' già nel gruppo {$a}';
