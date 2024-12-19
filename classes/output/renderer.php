@@ -23,7 +23,7 @@
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,8 +34,8 @@ namespace local_mass_enroll\output;
  *
  * @package     local_mass_enroll
  *
- * @copyright   Sebsoft.nl
- * @author      R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   R v Dongen
+ * @author      R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
@@ -48,9 +48,9 @@ class renderer extends \plugin_renderer_base {
      * @param array $params page parameters
      * @return string
      */
-    public function get_tabs($context, $selected, $params = array()) {
+    public function get_tabs($context, $selected, $params = []) {
         global $CFG;
-        $tabs = array();
+        $tabs = [];
 
         if (has_capability('local/mass_enroll:enrol', $context)) {
             $enrol = new \moodle_url($CFG->wwwroot . '/local/mass_enroll/massenrol.php', $params);

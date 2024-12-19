@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language file for local_mass_enroll, EN
+ * Language file for local_mass_enroll, FR
  *
  * File         local_mass_enroll.php
  * Encoding     UTF-8
@@ -24,60 +24,35 @@
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'Inscriptions massives';
-
-// Capabilities name required Moodle 2.3.
-$string['mass_enroll:enrol'] = 'Inscrire des utilisateurs à un cours par fichier CSV';
-$string['mass_enroll:unenrol'] = 'Désinscrire des utilisateurs d\' un cours par fichier CSV';
-
-
-$string['mass_enroll'] = 'Inscriptions massives';
-$string['mass_unenroll'] = 'Désinscriptions massives';
-$string['mass_enroll_info'] = '
-<p>
-Avec cette option vous allez pouvoir inscrire massivement à votre cours une liste d\'utilisateurs existants dans Moodle
-contenue dans un fichier que vous avez préparé, un compte par ligne
-</p>
-<p>
-<b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
-</p>
-<p>
-Ce fichier peut contenir une ou deux colonnes, séparées alors par une virgule, ou point-virgule ou une tabulation. <br/>
-<b>La première doit contenir un identifiant unique : N° étudiant (idnumber Moodle), login ou email  </b> de l\'utilisateur concerné. <br/>
-La seconde, <b>si elle est présente, </b> indique le groupe (au sens de ce cours Moodle) ou vous voulez inscrire cet utilisateur. <br/>
-Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si vous avez oublié le groupe ou inscrire les utilisateurs.
-</p>
-';
-
-$string['mass_unenroll_info'] = '
-<p>
-Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs déja inscrits à ce cours, contenue dans un fichier que vous avez préparé, un compte par ligne
-</p>
-<p>
-<b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
-</p>
-<p>
-Ce fichier peut contenir plusieurs colonnes, séparées alors par une virgule, ou point-virgule ou une tabulation. <br/>
-<b>La première doit contenir un identifiant unique : N° étudiant (idnumber Moodle), login ou email  </b> de l\'utilisateur concerné. <br/>
-Les autres colonnes, si présente seront simplement ignorées. Ce fichier peut donc être le même que celui utilisé lors d\'une inscription massive.<br/>
-
-Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si vous avez oublié quelques utilisateurs.
-</p>
-';
-$string['enroll'] = 'Les inscrire à mon cours';
-$string['unenroll'] = 'Les désincrire de mon cours';
-$string['mailreport'] = 'M\'envoyer un rapport par mail';
-$string['creategroups'] = 'Créer le(s) groupe(s) si nécessaire';
 $string['creategroupings'] = 'Créer le(s) groupement(s) si nécessaire';
+$string['creategroups'] = 'Créer le(s) groupe(s) si nécessaire';
+$string['email_sent'] = 'email envoyé à {$a}';
+$string['enroll'] = 'Les inscrire à mon cours';
 $string['firstcolumn'] = 'La première colonne contient';
-$string['roleassign'] = 'Inscrire comme';
 $string['idnumber'] = 'Numéro d\'étudiant';
-$string['username'] = 'Login';
-$string['mail_enrolment_subject'] = 'Inscriptions massives sur {$a}';
-$string['mail_unenrolment_subject'] = 'Désinscriptions massives sur {$a}';
+$string['im:already_in'] = '{$a} DÉJA inscrit ';
+$string['im:already_in_g'] = ' DEJA dans le groupe {$a}';
+$string['im:and_added_g'] = ' et ajouté au groupe Moodle {$a}';
+$string['im:enrolled_ok'] = '{$a} inscrit ';
+$string['im:err_opening_file'] = 'ERREUR en ouvrant le fichier {$a}';
+$string['im:error_add_g_grp'] = 'erreur en ajoutant le groupe {$a->group} au groupement {$a->grouping}';
+$string['im:error_add_grp'] = 'erreur en ajoutant le groupement {$a->group} au cours {$a->courseid}';
+$string['im:error_addg'] = 'erreur en ajoutant le groupe {$a->group}  au cours {$a->courseid} ';
+$string['im:error_adding_u_g'] = 'impossible d\'ajouter au groupe  {$a}';
+$string['im:error_g_unknown'] = 'erreur groupe {$a} inconnu';
+$string['im:error_in'] = 'erreur en inscrivant {$a}';
+$string['im:error_out'] = 'erreur en désinscrivant {$a}';
+$string['im:not_in'] = '{$a} PAS inscrit ';
+$string['im:stats_g'] = '{$a->nb} groupe(s) créé(s) : {$a->what}';
+$string['im:stats_grp'] = '{$a->nb} groupement(s) créé(s) : {$a->what}';
+$string['im:stats_i'] = '{$a} inscrits';
+$string['im:stats_ui'] = '{$a} désinscrits';
+$string['im:unenrolled_ok'] = '{$a} désinscrit ';
+$string['im:user_unknown'] = '{$a}  inconnu - ligne ignorée';
+$string['im:using_role'] = 'Utilisateurs inscrits comme : {$a} ';
 $string['mail_enrolment'] = '
 Bonjour,
 Vous venez d\'inscrire la liste d\'utilisateurs suivants à votre cours \'{$a->course}\'.
@@ -85,6 +60,7 @@ Voici un rapport des opérations :
 {$a->report}
 Cordialement.
 ';
+$string['mail_enrolment_subject'] = 'Inscriptions massives sur {$a}';
 $string['mail_unenrolment'] = '
 Bonjour,
 Vous venez de désinscrire la liste d\'utilisateurs suivants de votre cours \'{$a->course}\'.
@@ -92,30 +68,11 @@ Voici un rapport des opérations :
 {$a->report}
 Cordialement.
 ';
-$string['email_sent'] = 'email envoyé à {$a}';
-$string['im:using_role'] = 'Utilisateurs inscrits comme : {$a} ';
-$string['im:user_unknown'] = '{$a}  inconnu - ligne ignorée';
-$string['im:already_in'] = '{$a} DÉJA inscrit ';
-$string['im:enrolled_ok'] = '{$a} inscrit ';
-$string['im:error_in'] = 'erreur en inscrivant {$a}';
-$string['im:not_in'] = '{$a} PAS inscrit ';
-$string['im:unenrolled_ok'] = '{$a} désinscrit ';
-$string['im:error_out'] = 'erreur en désinscrivant {$a}';
-
-
-$string['im:error_addg'] = 'erreur en ajoutant le groupe {$a->groupe}  au cours {$a->courseid} ';
-$string['im:error_g_unknown'] = 'erreur groupe {$a} inconnu';
-$string['im:error_add_grp'] = 'erreur en ajoutant le groupement {$a->groupe} au cours {$a->courseid}';
-$string['im:error_add_g_grp'] = 'erreur en ajoutant le groupe {$a->groupe} au groupement {$a->groupe}';
-$string['im:and_added_g'] = ' et ajouté au groupe Moodle {$a}';
-$string['im:error_adding_u_g'] = 'impossible d\'ajouter au groupe  {$a}';
-$string['im:already_in_g'] = ' DEJA dans le groupe {$a}';
-$string['im:stats_i'] = '{$a} inscrits';
-$string['im:stats_ui'] = '{$a} désinscrits';
-$string['im:stats_g'] = '{$a->nb} groupe(s) créé(s) : {$a->what}';
-$string['im:stats_grp'] = '{$a->nb} groupement(s) créé(s) : {$a->what}';
-$string['im:err_opening_file'] = 'ERREUR en ouvrant le fichier {$a}';
-
+$string['mail_unenrolment_subject'] = 'Désinscriptions massives sur {$a}';
+$string['mailreport'] = 'M\'envoyer un rapport par mail';
+$string['mass_enroll'] = 'Inscriptions massives';
+$string['mass_enroll:enrol'] = 'Inscrire des utilisateurs à un cours par fichier CSV';
+$string['mass_enroll:unenrol'] = 'Désinscrire des utilisateurs d\' un cours par fichier CSV';
 $string['mass_enroll_help'] = '
 
 <h1>Inscriptions massives</h1>
@@ -215,7 +172,22 @@ inconnu                                   existe pas ligne ignorée
 avec l\'annuaire  LDAP de l\'établissement.
 </p>
 ';
-
+$string['mass_enroll_info'] = '
+<p>
+Avec cette option vous allez pouvoir inscrire massivement à votre cours une liste d\'utilisateurs existants dans Moodle
+contenue dans un fichier que vous avez préparé, un compte par ligne
+</p>
+<p>
+<b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
+</p>
+<p>
+Ce fichier peut contenir une ou deux colonnes, séparées alors par une virgule, ou point-virgule ou une tabulation. <br/>
+<b>La première doit contenir un identifiant unique : N° étudiant (idnumber Moodle), login ou email  </b> de l\'utilisateur concerné. <br/>
+La seconde, <b>si elle est présente, </b> indique le groupe (au sens de ce cours Moodle) ou vous voulez inscrire cet utilisateur. <br/>
+Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si vous avez oublié le groupe ou inscrire les utilisateurs.
+</p>
+';
+$string['mass_unenroll'] = 'Désinscriptions massives';
 $string['mass_unenroll_help'] = '
 <h1>Désinscriptions massives</h1>
 
@@ -254,3 +226,22 @@ Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si
 <span <font color=\'red\'>(**) </font></span>: les comptes visés doivent exister dans Moodle et être inscrits à ce cours.
 </p>
 ';
+$string['mass_unenroll_info'] = '
+<p>
+Avec cette option vous allez pouvoir désinscrire massivement de votre cours une liste d\'utilisateurs déja inscrits à ce cours, contenue dans un fichier que vous avez préparé, un compte par ligne
+</p>
+<p>
+<b>La premiere ligne </b>, les lignes vides, ou celles contenant un identifiant de compte inconnu seront ignorées.
+</p>
+<p>
+Ce fichier peut contenir plusieurs colonnes, séparées alors par une virgule, ou point-virgule ou une tabulation. <br/>
+<b>La première doit contenir un identifiant unique : N° étudiant (idnumber Moodle), login ou email  </b> de l\'utilisateur concerné. <br/>
+Les autres colonnes, si présente seront simplement ignorées. Ce fichier peut donc être le même que celui utilisé lors d\'une inscription massive.<br/>
+
+Vous pouvez répéter l\'opération plusieurs fois sans dommages, par exemple si vous avez oublié quelques utilisateurs.
+</p>
+';
+$string['pluginname'] = 'Inscriptions massives';
+$string['roleassign'] = 'Inscrire comme';
+$string['unenroll'] = 'Les désincrire de mon cours';
+$string['username'] = 'Login';

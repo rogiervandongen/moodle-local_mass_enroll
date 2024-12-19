@@ -22,9 +22,8 @@
  *
  * @package     local_mass_enroll
  *
- * @copyright   Sebsoft.nl
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -47,7 +46,7 @@ if ($hassiteconfig) {
         get_string('defaultrole_help', 'local_mass_enroll'),
         5, $roles));
 
-    $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
+    $yesno = [0 => get_string('no'), 1 => get_string('yes')];
     $settings->add(new admin_setting_configselect('local_mass_enroll/mailreportdefault',
         get_string('mailreportdefault', 'local_mass_enroll'),
         get_string('mailreportdefault_help', 'local_mass_enroll'),

@@ -24,7 +24,7 @@
  *
  * @copyright   1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -64,14 +64,14 @@ function local_mass_enroll_extends_settings_navigation(settings_navigation $navi
     $config = get_config('local_mass_enroll');
     if ((bool)$config->enablemassenrol) {
         if (has_capability('local/mass_enroll:enrol', $context)) {
-            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/massenrol.php', array('id' => $context->instanceid));
+            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/massenrol.php', ['id' => $context->instanceid]);
             $useradminnode->add(get_string('mass_enroll', 'local_mass_enroll'), $url,
                     navigation_node::TYPE_SETTING, null, 'massenrols', new pix_icon('i/admin', ''));
         }
     }
     if ((bool)$config->enablemassunenrol) {
         if (has_capability('local/mass_enroll:unenrol', $context)) {
-            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/massunenrol.php', array('id' => $context->instanceid));
+            $url = new moodle_url($CFG->wwwroot . '/local/mass_enroll/massunenrol.php', ['id' => $context->instanceid]);
             $useradminnode->add(get_string('mass_unenroll', 'local_mass_enroll'), $url,
                     navigation_node::TYPE_SETTING, null, 'massunenrols', new pix_icon('i/admin', ''));
         }
@@ -101,7 +101,8 @@ function mass_enroll($cir, $course, $context, $data) {
     $createdgroups = '';
     $createdgroupings = '';
 
-    $role = $DB->get_record('role', array('id' => $roleid));
+    $checknonmanualenrolments = get_config('local_mass_enroll', 'checknonmanualenrolments');
+    $role = $DB->get_record('role', ['id' => $roleid]);
 
     $result .= get_string('im:using_role', 'local_mass_enroll', $role->name) . "\n";
 
@@ -109,11 +110,11 @@ function mass_enroll($cir, $course, $context, $data) {
     // Moodle 2.x enrolment and role assignment are different.
     // Assure course has manual enrolment plugin instance we are going to use.
     // Only one instance is allowed; see enrol/manual/lib.php get_new_instance().
-    $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
+    $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'manual']);
     if (empty($instance)) {
         // Only add an enrol instance to the course if non-existent.
         $enrolid = $plugin->add_instance($course);
-        $instance = $DB->get_record('enrol', array('id' => $enrolid));
+        $instance = $DB->get_record('enrol', ['id' => $enrolid]);
     }
 
     // Init csv import helper.
@@ -129,13 +130,15 @@ function mass_enroll($cir, $course, $context, $data) {
         // Get rid on eventual double quotes unfortunately not done by Moodle CSV importer.
         $fields[0] = str_replace('"', '', trim($fields[0]));
 
-        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
+        if (!$user = $DB->get_record('user', [$useridfield => $fields[0]])) {
             $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0]) . "\n";
             continue;
         }
         // Already enroled?
         // We DO NOT support multiple roles in a course.
-        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+        if ($checknonmanualenrolments && user_has_role_assignment($user->id, $roleid, $context->id)) {
+            $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
+        } else if ($DB->record_exists('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id])) {
             $result .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else {
             // Take care of timestart/timeend in course settings.
@@ -226,14 +229,12 @@ function mass_enroll($cir, $course, $context, $data) {
     $result .= get_string('im:stats_grp', 'local_mass_enroll', $a) . "\n";
 
     // Trigger event.
-    $event = \local_mass_enroll\event\mass_enrolment_created::create(
-        array(
-            'objectid' => $course->id,
-            'courseid' => $course->id,
-            'context' => \context_course::instance($course->id),
-            'other' => array('info' => get_string('mass_enroll', 'local_mass_enroll'))
-        )
-    );
+    $event = \local_mass_enroll\event\mass_enrolment_created::create([
+        'objectid' => $course->id,
+        'courseid' => $course->id,
+        'context' => \context_course::instance($course->id),
+        'other' => ['info' => get_string('mass_enroll', 'local_mass_enroll')],
+    ]);
     $event->trigger();
 
     return $result;
@@ -265,18 +266,16 @@ function mass_unenroll($cir, $course, $context, $data) {
     // Moodle 2.x enrolment and role assignment are different.
     // Assure course has manual enrolment plugin instance we are going to use.
     // Only one instance is allowed; see enrol/manual/lib.php get_new_instance().
-    $manualinstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'));
+    $manualinstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'manual']);
     if (empty($manualinstance)) {
         // Only add an enrol instance to the course if non-existent.
         $enrolid = $manualenrolplugin->add_instance($course);
-        $manualinstance = $DB->get_record('enrol', array('id' => $enrolid));
+        $manualinstance = $DB->get_record('enrol', ['id' => $enrolid]);
     }
 
     // Init csv import helper.
     $cir->init();
     while ($fields = $cir->next()) {
-        $a = new stdClass();
-
         if (empty($fields)) {
             continue;
         }
@@ -285,12 +284,12 @@ function mass_unenroll($cir, $course, $context, $data) {
         // Get rid on eventual double quotes unfortunately not done by Moodle CSV importer.
         $fields[0] = str_replace('"', '', trim($fields[0]));
 
-        if (!$user = $DB->get_record('user', array($useridfield => $fields[0]))) {
+        if (!$user = $DB->get_record('user', [$useridfield => $fields[0]])) {
             $result .= get_string('im:user_unknown', 'local_mass_enroll', $fields[0]) . "\n";
             continue;
         }
         // Already enroled?
-        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $manualinstance->id, 'userid' => $user->id))) {
+        if ($DB->record_exists('user_enrolments', ['enrolid' => $manualinstance->id, 'userid' => $user->id])) {
             // Unenrol the user with this plugin instance (unfortunately return void, no more status).
             $manualenrolplugin->unenrol_user($manualinstance, $user->id);
             $result .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user)) . "\n";
@@ -311,14 +310,12 @@ function mass_unenroll($cir, $course, $context, $data) {
     $result .= get_string('im:stats_ui', 'local_mass_enroll', $unenrollablecount) . "\n";
 
     // Trigger event.
-    $event = \local_mass_enroll\event\mass_unenrolment_created::create(
-            array(
-                'objectid' => $course->id,
-                'courseid' => $course->id,
-                'context' => context_course::instance($course->id),
-                'other' => array('info' => get_string('mass_unenroll', 'local_mass_enroll'))
-                )
-            );
+    $event = \local_mass_enroll\event\mass_unenrolment_created::create([
+        'objectid' => $course->id,
+        'courseid' => $course->id,
+        'context' => context_course::instance($course->id),
+        'other' => ['info' => get_string('mass_unenroll', 'local_mass_enroll')],
+    ]);
     $event->trigger();
 
     return $result;
@@ -352,7 +349,7 @@ function mass_enroll_find_instances($courseid, array $extramethods) {
 function mass_enroll_find_enrolment($user, array $instances) {
     global $DB;
     foreach ($instances as $instance) {
-        if ($DB->get_record('user_enrolments', array('enrolid' => $instance->id, 'userid' => $user->id))) {
+        if ($DB->get_record('user_enrolments', ['enrolid' => $instance->id, 'userid' => $user->id])) {
             return $instance;
         }
     }
@@ -419,7 +416,7 @@ function mass_enroll_grouping_exists($name, $courseid) {
  */
 function mass_enroll_group_in_grouping($gid, $gpid) {
     global $DB;
-    $conditions = array('groupingid' => $gpid, 'groupid' => $gid);
+    $conditions = ['groupingid' => $gpid, 'groupid' => $gid];
     return $DB->get_record('groupings_groups', $conditions, '*', IGNORE_MISSING);
 }
 

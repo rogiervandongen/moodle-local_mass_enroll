@@ -26,30 +26,28 @@
  *
  * @copyright   1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'local/mass_enroll:enrol' => array(
+$capabilities = [
+    'local/mass_enroll:enrol' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/role:assign'
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/role:assign',
+    ],
     // Not given by default to editingteacher (life is tough).
-    'local/mass_enroll:unenrol' => array(
+    'local/mass_enroll:unenrol' => [
         'riskbitmask' => RISK_XSS | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/role:assign'
-    ),
-);
+        'archetypes' => ['manager' => CAP_ALLOW],
+        'clonepermissionsfrom' => 'moodle/role:assign',
+    ],
+];

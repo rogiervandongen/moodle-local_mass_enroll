@@ -23,7 +23,7 @@
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_mass_enroll\local\forms;
@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/local/mass_enroll/lib.php');
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base extends \moodleform {

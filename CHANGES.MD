@@ -1,3 +1,14 @@
+Version 4.1.0 (build 2024121600)
+* CI Compliance changes (lots and lots)
+* Fix (github) issue #18
+* Fix (github) issue #16
+* Fix (github) issue #13
+* Close (github) issue #11 (no longer relevant)
+* Incorporated (github) PR #15 (thank you JuliaMJenkins)
+* Incorporated (github) PR #10 (thank you ANdrewHancox)
+* Minimum required Moodle: 4.3 (build 2023100900.00))
+* Added missing strings
+
 Version 4.0.0 (build 2023100100)
 * Full overhaul of code
 * Changed CSV processor

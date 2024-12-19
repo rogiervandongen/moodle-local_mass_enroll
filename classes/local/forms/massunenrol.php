@@ -23,7 +23,7 @@
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_mass_enroll\local\forms;
@@ -34,7 +34,7 @@ namespace local_mass_enroll\local\forms;
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class massunenrol extends base {
@@ -45,7 +45,6 @@ class massunenrol extends base {
     public function definition() {
         $mform = & $this->_form;
         $course = $this->_customdata['course'];
-        $context = $this->_customdata['context'];
         $this->config = get_config('local_mass_enroll');
 
         $mform->addElement('header', 'general', '');
@@ -105,7 +104,7 @@ class massunenrol extends base {
             'encoding' => $data->encoding,
             'delimitername' => $data->delimitername,
             'enclosure' => $data->enclosure ?? '"',
-            'extramethods' => $data->extramethods ?? []
+            'extramethods' => $data->extramethods ?? [],
         ];
         $content = $this->get_file_content('attachment');
 

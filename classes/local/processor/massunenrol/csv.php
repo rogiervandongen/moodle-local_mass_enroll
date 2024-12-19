@@ -22,7 +22,7 @@
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +35,7 @@ use local_mass_enroll\local\processor\csvbase;
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv extends csvbase {
@@ -52,7 +52,7 @@ class csv extends csvbase {
         'encoding' => 'UTF-8',
         'delimitername' => 'semicolon',
         'enclosure' => '"',
-        'extramethods' => []
+        'extramethods' => [],
     ];
 
     /**
@@ -82,11 +82,11 @@ class csv extends csvbase {
 
         // Trigger event.
         $event = \local_mass_enroll\event\mass_enrolment_created::create([
-                'objectid' => $this->course->id,
-                'courseid' => $this->course->id,
-                'context' => $this->coursecontext,
-                'other' => array('info' => get_string('mass_enroll', 'local_mass_enroll'))
-            ]);
+            'objectid' => $this->course->id,
+            'courseid' => $this->course->id,
+            'context' => $this->coursecontext,
+            'other' => ['info' => get_string('mass_enroll', 'local_mass_enroll')],
+        ]);
         $event->trigger();
 
         if ($this->mailreport) {
@@ -127,7 +127,7 @@ class csv extends csvbase {
         $info = '';
 
         // Now try to process the unenrolment.
-        if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $this->enrolinstance->id, 'userid' => $user->id))) {
+        if ($DB->record_exists('user_enrolments', ['enrolid' => $this->enrolinstance->id, 'userid' => $user->id])) {
             // Unenrol the user with this plugin instance (unfortunately return void, no more status).
             $this->enrolplugin->unenrol_user($this->enrolinstance, $user->id);
             $info .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user));

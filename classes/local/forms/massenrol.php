@@ -23,7 +23,7 @@
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_mass_enroll\local\forms;
@@ -34,7 +34,7 @@ namespace local_mass_enroll\local\forms;
  * @package     local_mass_enroll
  *
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class massenrol extends base {
@@ -43,11 +43,8 @@ class massenrol extends base {
      * Form definition
      */
     public function definition() {
-        global $DB;
-
         $mform = & $this->_form;
         $course = $this->_customdata['course'];
-        $context = $this->_customdata['context'];
         $this->config = get_config('local_mass_enroll');
 
         $mform->addElement('header', 'general', ''); // Fill in the data depending on page params.

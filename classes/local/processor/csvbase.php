@@ -22,7 +22,7 @@
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/group/lib.php');
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class csvbase {
@@ -213,7 +213,7 @@ abstract class csvbase {
         $this->coursegroupings = $DB->get_records_sql_menu('SELECT name, id FROM {groupings} WHERE courseid = ?',
                 [$this->course->id]);
         $this->enrolplugin = enrol_get_plugin('manual');
-        $this->enrolinstance = $DB->get_record('enrol', array('courseid' => $this->course->id, 'enrol' => 'manual'));
+        $this->enrolinstance = $DB->get_record('enrol', ['courseid' => $this->course->id, 'enrol' => 'manual']);
     }
 
     /**

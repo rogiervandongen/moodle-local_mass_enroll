@@ -27,7 +27,7 @@
  *
  * @copyright   1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @copyright   2012 onwards Patrick Pollet
- * @copyright   2015 onwards R.J. van Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R.J. van Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +35,7 @@ require(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 // Get params.
 $id = required_param('id', PARAM_INT);
-if (!$course = $DB->get_record('course', array('id' => $id))) {
+if (!$course = $DB->get_record('course', ['id' => $id])) {
     throw new \moodle_exception("Course is misconfigured");
 }
 
@@ -47,16 +47,16 @@ require_capability('local/mass_enroll:unenrol', $context);
 // Start making page.
 $strinscriptions = get_string('mass_enroll', 'local_mass_enroll');
 $PAGE->set_pagelayout('incourse');
-$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/massunenrol.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url($CFG->wwwroot . '/local/mass_enroll/massunenrol.php', ['id' => $id]));
 $PAGE->set_title($course->fullname . ': ' . $strinscriptions);
 $PAGE->set_heading($course->fullname . ': ' . $strinscriptions);
 
 $course = $PAGE->course;
 $renderer = $PAGE->get_renderer('local_mass_enroll');
-$form = new \local_mass_enroll\local\forms\massunenrol(new moodle_url($PAGE->url), array(
+$form = new \local_mass_enroll\local\forms\massunenrol(new moodle_url($PAGE->url), [
     'course' => $course,
-    'context' => $context
-));
+    'context' => $context,
+]);
 $result = $form->process();
 
 if ($result) {
@@ -65,7 +65,7 @@ if ($result) {
 }
 
 echo $renderer->header();
-echo $renderer->get_tabs($context, 'massunenrol', array('id' => $course->id));
+echo $renderer->get_tabs($context, 'massunenrol', ['id' => $course->id]);
 echo $renderer->heading_with_help($strinscriptions, 'mass_unenroll', 'local_mass_enroll',
                 'icon', get_string('mass_unenroll', 'local_mass_enroll'));
 echo $renderer->box(get_string('mass_unenroll_info', 'local_mass_enroll'), 'center');

@@ -22,7 +22,7 @@
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,7 +35,7 @@ use local_mass_enroll\local\processor\csvbase;
  *
  * @package     local_mass_enroll
  *
- * @copyright   2015 onwards R v Dongen <rogier@sebsoft.nl>
+ * @copyright   2015 onwards R v Dongen
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv extends csvbase {
@@ -94,7 +94,7 @@ class csv extends csvbase {
         if (empty($this->enrolinstance)) {
             // Only add an enrol instance to the course if non-existent.
             $enrolid = $this->plugin->add_instance($this->course);
-            $this->instance = $DB->get_record('enrol', array('id' => $enrolid));
+            $this->instance = $DB->get_record('enrol', ['id' => $enrolid]);
         }
     }
 
@@ -116,7 +116,7 @@ class csv extends csvbase {
                 'objectid' => $this->course->id,
                 'courseid' => $this->course->id,
                 'context' => $this->coursecontext,
-                'other' => array('info' => get_string('mass_unenroll', 'local_mass_enroll'))
+                'other' => ['info' => get_string('mass_unenroll', 'local_mass_enroll')],
             ]);
         $event->trigger();
 
@@ -141,13 +141,13 @@ class csv extends csvbase {
 
         if (isset($dataobject->username)) {
             $uparams = ['username' => $dataobject->username];
-        } else if ($dataobject->idnumber) {
+        } else if (isset($dataobject->idnumber)) {
             $uparams = ['idnumber' => $dataobject->idnumber];
         } else if (isset($dataobject->email)) {
             $uparams = ['email' => $dataobject->email];
         }
 
-        if (!$user = $DB->get_record('user', $uparams)) {
+        if (!$user = $DB->get_record('user', $uparams, '*', IGNORE_MULTIPLE)) {
             $dataobject->error = get_string('im:user_unknown', 'local_mass_enroll', reset(array_values($uparams)));
             return false;
         }
@@ -175,7 +175,7 @@ class csv extends csvbase {
 
         if ($checknonmanualenrolments && user_has_role_assignment($user->id, $dataobject->role, $this->coursecontext->id)) {
             $info .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
-        } else if ($ue = $DB->get_record('user_enrolments', array('enrolid' => $this->instance->id, 'userid' => $user->id))) {
+        } else if ($DB->record_exists('user_enrolments', ['enrolid' => $this->enrolinstance->id, 'userid' => $user->id])) {
             $info .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else {
             // Take care of timestart/timeend in course settings.
@@ -203,7 +203,7 @@ class csv extends csvbase {
                     if (!($gpid = mass_enroll_add_group($dataobject->group, $this->course->id))) {
                         $a = (object)[
                             'group' => $dataobject->group,
-                            'courseid' => $this->course->id
+                            'courseid' => $this->course->id,
                         ];
                         $this->errors[] = get_string('im:error_addg', 'local_mass_enroll', $a);
                     } else {
@@ -225,7 +225,7 @@ class csv extends csvbase {
                     if (!($gpid = mass_enroll_add_grouping($dataobject->grouping, $this->course->id))) {
                         $a = (object) [
                             'grouping' => $dataobject->grouping,
-                            'courseid' => $this->course->id
+                            'courseid' => $this->course->id,
                         ];
                         $this->errors[] = get_string('im:error_add_grp', 'local_mass_enroll', $a);
                     } else {
@@ -243,7 +243,7 @@ class csv extends csvbase {
                     $a = (object) [
                         'group' => $dataobject->group,
                         'grouping' => $dataobject->grouping,
-                        'courseid' => $this->course->id
+                        'courseid' => $this->course->id,
                     ];
                     $this->errors[] = get_string('im:error_add_g_grp', 'local_mass_enroll', $a);
                 }
@@ -256,7 +256,7 @@ class csv extends csvbase {
             if (!groups_is_member($dataobject->groupid, $user->id)) {
                 $a = (object)[
                     'group' => $dataobject->group,
-                    'grouping' => $dataobject->grouping
+                    'grouping' => $dataobject->grouping,
                 ];
                 $ok = groups_add_member($dataobject->groupid, $user->id);
                 if ($ok) {
