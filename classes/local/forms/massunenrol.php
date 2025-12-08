@@ -89,7 +89,7 @@ class massunenrol extends base {
     /**
      * Process the form.
      *
-     * @return boolean
+     * @return array
      */
     public function process() {
         $data = $this->get_data();
@@ -114,8 +114,9 @@ class massunenrol extends base {
         $csvprocessor->set_mailreport((bool)$data->mailreport);
 
         $result = $csvprocessor->process();
+        $displayreport = $csvprocessor->compile_results();
 
-        return $result;
+        return [$result, $displayreport];
     }
 
     /**

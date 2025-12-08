@@ -57,11 +57,30 @@ $form = new \local_mass_enroll\local\forms\massunenrol(new moodle_url($PAGE->url
     'course' => $course,
     'context' => $context,
 ]);
-$result = $form->process();
+if ($form->is_cancelled()) {
+    // Redirect to course.
+    $redirectto = get_config('local_mass_enroll', 'massenrolunenrolredirect');
+    switch ($redirectto) {
+        case 'participant':
+            redirect(new moodle_url('/user/index.php', ['id' => $id]));
+        case 'course':
+        default:
+            redirect(new moodle_url('/course/view.php', ['id' => $id]));
+    }
+}
+list($result, $displayreport) = $form->process();
 
 if ($result) {
     \core\notification::success(get_string('process:massunenrol:success', 'local_mass_enroll'));
-    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
+    \core\notification::success(get_string('process:massenrol:success', 'local_mass_enroll'));
+    echo $renderer->header();
+    echo $renderer->get_tabs($context, 'massunenrol', ['id' => $course->id]);
+    echo $renderer->heading(get_string('csvresulttable', 'local_mass_enroll'), 2);
+    echo $renderer->box($displayreport, 'center');
+    echo '<p class="mt-2"><a class="btn btn-primary" href="' .
+            (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false) .
+            '">' . get_string('continue') . '</a></p>';
+    echo $renderer->footer();
 }
 
 echo $renderer->header();

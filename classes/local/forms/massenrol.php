@@ -69,6 +69,10 @@ class massenrol extends base {
         $mform->addElement('selectyesno', 'creategroupings', get_string('creategroupings', 'local_mass_enroll'));
         $mform->setDefault('creategroupings', 1);
 
+        $mform->addElement('selectyesno', 'updateroles', get_string('updateroles', 'local_mass_enroll'));
+        $mform->addHelpButton('updateroles', 'updateroles', 'local_mass_enroll');
+        $mform->setDefault('updateroles', 0);
+
         $mform->addElement('selectyesno', 'mailreport', get_string('mailreport', 'local_mass_enroll'));
         $mform->setDefault('mailreport', (int)$this->config->mailreportdefault);
 
@@ -97,7 +101,7 @@ class massenrol extends base {
     /**
      * Process upload
      *
-     * @return boolean
+     * @return array
      */
     public function process() {
         $data = $this->get_data();
@@ -115,6 +119,7 @@ class massenrol extends base {
             'defaultrole' => $data->roleassign,
             'creategroups' => (bool)$data->creategroups,
             'creategroupings' => (bool)$data->creategroupings,
+            'updateroles' => (bool)$data->updateroles,
         ];
         $content = $this->get_file_content('attachment');
 
@@ -124,8 +129,9 @@ class massenrol extends base {
         $csvprocessor->set_mailreport((bool)$data->mailreport);
 
         $result = $csvprocessor->process();
+        $displayreport = $csvprocessor->compile_results();
 
-        return $result;
+        return [$result, $displayreport];
     }
 
     /**

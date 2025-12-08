@@ -91,10 +91,11 @@ class csv extends csvbase {
 
         if ($this->mailreport) {
             $a = new \stdClass();
+            $a->wwwroot = $CFG->wwwroot;
             $a->course = $this->course->fullname;
             $a->report = $this->compile_results();
             email_to_user($USER, \core_user::get_noreply_user(),
-                    get_string('mail_unenrolment_subject', 'local_mass_enroll', $CFG->wwwroot),
+                    get_string('mail_unenrolment_subject', 'local_mass_enroll', $a),
                     get_string('mail_unenrolment', 'local_mass_enroll', $a));
         }
     }
@@ -124,21 +125,21 @@ class csv extends csvbase {
         $dataobject->userid = $user->id;
         $dataobject->userfullname = fullname($user);
 
-        $info = '';
+        $info = [];
 
         // Now try to process the unenrolment.
         if ($DB->record_exists('user_enrolments', ['enrolid' => $this->enrolinstance->id, 'userid' => $user->id])) {
             // Unenrol the user with this plugin instance (unfortunately return void, no more status).
             $this->enrolplugin->unenrol_user($this->enrolinstance, $user->id);
-            $info .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user));
+            $info[] = get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user));
         } else if ($instance = mass_enroll_find_enrolment($user, $this->enrolmentinstances)) {
             // Try to locate in other instances.
             $enrolplugin = $this->enrolmentinstances[$instance->enrol];
             $enrolplugin->unenrol_user($instance, $user->id);
-            $info .= get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user));
+            $info[] = get_string('im:unenrolled_ok', 'local_mass_enroll', fullname($user));
         } else {
             // Weird, user not enrolled.
-            $info .= get_string('im:not_in', 'local_mass_enroll', fullname($user));
+            $info[] = get_string('im:not_in', 'local_mass_enroll', fullname($user));
         }
 
         $dataobject->info = $info;
@@ -151,7 +152,7 @@ class csv extends csvbase {
      *
      * @return string
      */
-    protected function compile_results() {
+    public function compile_results() {
         $result = '';
 
         $result .= '<table>';
@@ -163,12 +164,13 @@ class csv extends csvbase {
         $result .= '<td>'.get_string('info', 'local_mass_enroll').'</td>';
         $result .= '</tr>';
         foreach ($this->results as $dataobj) {
+            $dataobj->info = $dataobj->info ?? [];
             $result .= '<tr>';
             $result .= '<td>'.($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '').'</td>';
             $result .= '<td>'.($dataobj->userid ?? '').'</td>';
             $result .= '<td>'.($dataobj->userfullname ?? '').'</td>';
             $result .= '<td>'.($dataobj->error ?? '').'</td>';
-            $result .= '<td>'.($dataobj->info ?? '').'</td>';
+            $result .= '<td>'.implode('<br/>', $dataobj->info).'</td>';
             $result .= '</tr>';
         }
         $result .= '</table>';

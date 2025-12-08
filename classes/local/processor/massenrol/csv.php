@@ -50,6 +50,7 @@ class csv extends csvbase {
         'defaultrole' => 0,
         'creategroups' => true,
         'creategroupings' => true,
+        'updateroles' => false,
     ];
 
     /**
@@ -81,7 +82,7 @@ class csv extends csvbase {
      */
     public function set_course($course) {
         parent::set_course($course);
-        $this->assignableroles = get_assignable_roles($this->coursecontext);
+        $this->assignableroles = get_assignable_roles($this->coursecontext, ROLENAME_SHORT);
         return $this;
     }
 
@@ -94,7 +95,7 @@ class csv extends csvbase {
         if (empty($this->enrolinstance)) {
             // Only add an enrol instance to the course if non-existent.
             $enrolid = $this->plugin->add_instance($this->course);
-            $this->instance = $DB->get_record('enrol', ['id' => $enrolid]);
+            $this->enrolinstance = $DB->get_record('enrol', ['id' => $enrolid]);
         }
     }
 
@@ -122,10 +123,11 @@ class csv extends csvbase {
 
         if ($this->mailreport) {
             $a = new \stdClass();
+            $a->wwwroot = $CFG->wwwroot;
             $a->course = $this->course->fullname;
             $a->report = $this->compile_results();
             email_to_user($USER, \core_user::get_noreply_user(),
-                    get_string('mail_enrolment_subject', 'local_mass_enroll', $CFG->wwwroot),
+                    get_string('mail_enrolment_subject', 'local_mass_enroll', $a),
                     get_string('mail_enrolment', 'local_mass_enroll', $a));
         }
     }
@@ -156,6 +158,10 @@ class csv extends csvbase {
         $dataobject->userfullname = fullname($user);
 
         // Set role.
+        if (isset($dataobject->roleshortname)) {
+            // Find/set role.
+            $dataobject->role = array_search($dataobject->roleshortname, $this->assignableroles, true);
+        }
         if (!isset($dataobject->role)) {
             $dataobject->role = $this->options['defaultrole'];
         }
@@ -167,16 +173,17 @@ class csv extends csvbase {
         }
 
         // General info for this user object.
-        $info = '';
+        $info = [];
 
-        // Already enroled?
+        // Already enrolled?
         // We DO NOT support multiple roles in a course.
         $checknonmanualenrolments = (bool)get_config('local_mass_enroll', 'checknonmanualenrolments');
+        $userhasrole = user_has_role_assignment($user->id, $dataobject->role, $this->coursecontext->id);
 
-        if ($checknonmanualenrolments && user_has_role_assignment($user->id, $dataobject->role, $this->coursecontext->id)) {
-            $info .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
+        if ($checknonmanualenrolments && $userhasrole) {
+            $info[] = get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else if ($DB->record_exists('user_enrolments', ['enrolid' => $this->enrolinstance->id, 'userid' => $user->id])) {
-            $info .= get_string('im:already_in', 'local_mass_enroll', fullname($user));
+            $info[] = get_string('im:already_in', 'local_mass_enroll', fullname($user));
         } else {
             // Take care of timestart/timeend in course settings.
             $timestart = time();
@@ -189,7 +196,7 @@ class csv extends csvbase {
             }
             // Enrol the user with this plugin instance (unfortunately return void, no more status).
             $this->enrolplugin->enrol_user($this->enrolinstance, $user->id, $dataobject->role, $timestart, $timeend);
-            $info .= get_string('im:enrolled_ok', 'local_mass_enroll', fullname($user));
+            $info[] = get_string('im:enrolled_ok', 'local_mass_enroll', fullname($user));
         }
 
         // Group processing.
@@ -242,31 +249,47 @@ class csv extends csvbase {
                 if (!mass_enroll_add_group_grouping($dataobject->groupid, $dataobject->groupingid)) {
                     $a = (object) [
                         'group' => $dataobject->group,
-                        'grouping' => $dataobject->grouping,
+                        'grouping' => $grouping->name,
                         'courseid' => $this->course->id,
                     ];
                     $this->errors[] = get_string('im:error_add_g_grp', 'local_mass_enroll', $a);
                 }
             }
-
         }
 
         if (!empty($dataobject->groupid)) {
             // Finally add to group if needed.
             if (!groups_is_member($dataobject->groupid, $user->id)) {
-                $a = (object)[
-                    'group' => $dataobject->group,
-                    'grouping' => $dataobject->grouping,
-                ];
+                $a = (object)['group' => $dataobject->group];
                 $ok = groups_add_member($dataobject->groupid, $user->id);
                 if ($ok) {
-                    $info .= get_string('im:and_added_g', 'local_mass_enroll', $a);
+                    $info[] = get_string('im:and_added_g', 'local_mass_enroll', $a);
                 } else {
-                    $info .= get_string('im:error_adding_u_g', 'local_mass_enroll', $a);
+                    $info[] = get_string('im:error_adding_u_g', 'local_mass_enroll', $a);
+                }
+            } else {
+                $a = (object)['group' => $dataobject->group];
+                $info[] = get_string('im:already_in_g', 'local_mass_enroll', $a);
+            }
+        }
+
+        // Do we need to change roles? WARNING: ALL roles will be removed except those implied, ...
+        // ... but only if the user does not yet have the role.
+        if ((bool)$this->options['updateroles']) {
+            $addcsvrole = true;
+            $userroles = get_user_roles($this->coursecontext, $user->id, false);
+            foreach ($userroles as $userrole) {
+                if ($userrole->roleid != $dataobject->role) {
+                    role_unassign($userrole->roleid, $user->id, $this->coursecontext->id);
+                    $info[] = get_string('im:roleunassigned', 'local_mass_enroll', $userrole->shortname);
+                } else {
+                    $addcsvrole = false;
                 }
             }
-        } else {
-            $info .= get_string('im:already_in_g', 'local_mass_enroll', $a);
+            if ($addcsvrole) {
+                role_assign($dataobject->role, $user->id, $this->coursecontext->id);
+                $info[] = get_string('im:roleassigned', 'local_mass_enroll', $dataobject->roleshortname);
+            }
         }
 
         $dataobject->info = $info;
@@ -279,10 +302,10 @@ class csv extends csvbase {
      *
      * @return string
      */
-    protected function compile_results() {
+    public function compile_results() {
         $result = '';
 
-        $result .= '<table>';
+        $result .= '<table class="table">';
         $result .= '<tr>';
         $result .= '<td>'.get_string('identifier', 'local_mass_enroll').'</td>';
         $result .= '<td>'.get_string('userid', 'local_mass_enroll').'</td>';
@@ -294,6 +317,7 @@ class csv extends csvbase {
         $result .= '<td>'.get_string('info', 'local_mass_enroll').'</td>';
         $result .= '</tr>';
         foreach ($this->results as $dataobj) {
+            $dataobj->info = $dataobj->info ?? [];
             $result .= '<tr>';
             $result .= '<td>'.($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '').'</td>';
             $result .= '<td>'.($dataobj->userid ?? '').'</td>';
@@ -302,7 +326,7 @@ class csv extends csvbase {
             $result .= '<td>'.($dataobj->group ?? '').'</td>';
             $result .= '<td>'.($dataobj->grouping ?? '').'</td>';
             $result .= '<td>'.($dataobj->error ?? '').'</td>';
-            $result .= '<td>'.($dataobj->info ?? '').'</td>';
+            $result .= '<td>'.implode('<br/>', $dataobj->info).'</td>';
             $result .= '</tr>';
         }
         $result .= '</table>';

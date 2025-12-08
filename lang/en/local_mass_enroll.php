@@ -34,8 +34,10 @@ Please note "manual" cannot be configured as this is the default and will always
 $string['checknonmanualenrolments'] = 'Check other enrolments than manual?';
 $string['checknonmanualenrolments_help'] = 'When enabled, role assignments from enrolment methods other than manual will be checked, meaning the target role can be applied from any enrolment plugin.
 If the user has the target role from any enrolment plugin, processing will be skipped';
+$string['coursepage'] = 'Course page';
 $string['creategroupings'] = 'Create grouping(s) if needed';
 $string['creategroups'] = 'Create group(s) if needed';
+$string['csvresulttable'] = 'CSV Results';
 $string['defaultrole'] = 'Default role to assign';
 $string['defaultrole_help'] = 'Provide the default role to assign when not present in the CSV';
 $string['email_sent'] = 'email sent to {$a}';
@@ -55,52 +57,60 @@ $string['event:massunenrolcreated'] = 'Mass unenrolment created';
 $string['firstcolumn'] = 'First column contains';
 $string['identifier'] = 'Identifier';
 $string['idnumber'] = 'Id number';
-$string['im:already_in'] = '{$a} already enroled ';
-$string['im:already_in_g'] = ' already in group {$a}';
-$string['im:and_added_g'] = ' and added to Moodle\'s group {$a}';
-$string['im:enrolled_ok'] = '{$a} enroled ';
+$string['im:already_in'] = '{$a} already enrolled ';
+$string['im:already_in_g'] = ' already in group {$a->group}';
+$string['im:and_added_g'] = ' and added to Moodle\'s group {$a->group}';
+$string['im:enrolled_ok'] = '{$a} enrolled ';
 $string['im:err_opening_file'] = 'error opening file {$a}';
 $string['im:error_add_g_grp'] = 'error adding group {$a->group} to grouping {$a->grouping}';
 $string['im:error_add_grp'] = 'error adding grouping {$a->grouping} to course {$a->courseid}';
 $string['im:error_addg'] = 'error adding group {$a->group} to course {$a->courseid} ';
 $string['im:error_adding_u_g'] = 'error adding to group {$a}';
 $string['im:error_g_unknown'] = 'error unkown group {$a} ';
-$string['im:error_in'] = 'error enroling {$a}';
-$string['im:error_out'] = 'error unenroling {$a}';
+$string['im:error_in'] = 'error enrolling {$a}';
+$string['im:error_out'] = 'error unenrolling {$a}';
 $string['im:nonassignablerole'] = 'Role {$a} cannot be assigned in this context';
-$string['im:not_in'] = '{$a} NOT enroled ';
+$string['im:not_in'] = '{$a} NOT enrolled ';
 $string['im:opening_file'] = 'Opening file : {$a} ';
+$string['im:roleassigned'] = 'Role {$a} was assigned';
+$string['im:roleunassigned'] = 'Role {$a} was unassigned';
 $string['im:stats_g'] = '{$a->nb} group(s) created : {$a->what}';
 $string['im:stats_grp'] = '{$a->nb} grouping(s) created : {$a->what}';
-$string['im:stats_i'] = '{$a} enroled';
-$string['im:stats_ui'] = '{$a} unenroled';
-$string['im:unenrolled_ok'] = '{$a} unenroled ';
+$string['im:stats_i'] = '{$a} enrolled';
+$string['im:stats_ui'] = '{$a} unenrolled';
+$string['im:unenrolled_ok'] = '{$a} unenrolled ';
 $string['im:user_unknown'] = '{$a} unknown - skipping line';
-$string['im:using_role'] = 'Enroling users as : {$a} ';
+$string['im:using_role'] = 'Enrolling users as : {$a} ';
 $string['info'] = 'Info';
 $string['localmassenrolldefaults'] = 'Mass enrol default settings';
 $string['localmassenrollextensions'] = 'Menu extension settings';
 $string['mail_enrolment'] = '
 Hello,
-You just enroled the following list of users to your course \'{$a->course}\'.
+You just enrolled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
 {$a->report}
-Sincerly.
+Kind regards,
+Moodle
+({$a->wwwroot})
 ';
-$string['mail_enrolment_subject'] = 'Bulk enrolments on {$a}';
+$string['mail_enrolment_subject'] = 'Bulk enrolments on {$a->course} ({$a->wwwroot})';
 $string['mail_unenrolment'] = '
 Hello,
-You just unenroled the following list of users to your course \'{$a->course}\'.
+You just unenrolled the following list of users to your course \'{$a->course}\'.
 Here is a report of operations :
 {$a->report}
-Sincerly.
+Kind regards,
+Moodle
+({$a->wwwroot})
 ';
-$string['mail_unenrolment_subject'] = 'Bulk unenrolments on {$a}';
+$string['mail_unenrolment_subject'] = 'Bulk unenrolments on {$a->course} ({$a->wwwroot})';
 $string['mailreport'] = 'Send me a mail report';
 $string['mailreportdefault'] = 'Send reports default';
 $string['mailreportdefault_help'] = 'Configure the default setting for sending reports for the bulk (un)enrolment forms';
 $string['mapping:column'] = 'Column {$a}';
 $string['mappings'] = 'Mappings';
+$string['massenrolunenrolredirect'] = 'Redirection';
+$string['massenrolunenrolredirect_help'] = 'Sets the page to redirect to on cancellation of mass (un)enroll form.';
 $string['mass_enroll'] = 'Bulk enrolments';
 $string['mass_enroll:enrol'] = 'Enrol users to a course by CSV file';
 $string['mass_enroll:unenrol'] = 'Unenrol users from a course by CSV file';
@@ -201,13 +211,20 @@ $string['mass_unenroll_info'] = '
 ';
 $string['massenrollsettings'] = 'Mass enrol settings';
 $string['other'] = 'Other settings';
+$string['participantpage'] = 'Course participant page';
 $string['pluginname'] = 'Mass enrolments';
 $string['privacy:metadata'] = 'The Mass Enrol local plugin does not store any personal data';
 $string['process:massenrol:success'] = 'Mass enrol successful';
 $string['process:massunenrol:success'] = 'Mass unenrol successful';
-$string['role'] = 'Role';
+$string['role'] = 'Role ID';
+$string['roleshortname'] = 'Role short name';
 $string['roleassign'] = 'Role to assign';
 $string['unenroll'] = 'Unenrol them from my course';
+$string['updateroles'] = 'Update roles?';
+$string['updateroles_help'] = 'When set to yes, this will update all user roles.<br/>
+This can be used to change roles for existing enrolments.<br/>
+<strong>Please remember that we do <i>not</i> support multiple roles in the CSV, so this will remove all (course) roles except the role indicated in the CSV or the settings (which will be assigned if not present)</strong>.<br/>
+If the enrolment does not exist yet, the base process to enrol the user with the indicated role will be honoured.';
 $string['userfullname'] = 'User fullname';
 $string['userid'] = 'User ID';
 $string['username'] = 'Username';

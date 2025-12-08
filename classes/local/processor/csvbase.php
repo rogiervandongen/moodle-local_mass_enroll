@@ -280,6 +280,8 @@ abstract class csvbase {
         $this->importer->cleanup(false); // Only currently uploaded CSV file.
 
         $this->after_processing_complete();
+
+        return true;
     }
 
     /**

@@ -81,5 +81,14 @@ if ($hassiteconfig) {
         get_string('enablemassunenrol', 'local_mass_enroll'),
         get_string('enablemassunenrol_help', 'local_mass_enroll'), 1));
 
+    $settings->add(new admin_setting_configselect('local_mass_enroll/massenrolunenrolredirect',
+        get_string('massenrolunenrolredirect', 'local_mass_enroll'),
+        get_string('massenrolunenrolredirect_help', 'local_mass_enroll'),
+        'course',
+        [
+            'course' => get_string('coursepage', 'local_mass_enroll'),
+            'participants' => get_string('participantpage', 'local_mass_enroll'),
+        ]));
+
     $ADMIN->add('localplugins', $settings);
 }

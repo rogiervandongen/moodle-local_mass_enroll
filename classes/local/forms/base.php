@@ -126,7 +126,8 @@ abstract class base extends \moodleform {
             'email' => get_string('email'),
             'group' => get_string('group', 'group'),
             'grouping' => get_string('grouping', 'group'),
-            'role' => get_string('role'),
+            'role' => get_string('role', 'local_mass_enroll'),
+            'roleshortname' => get_string('roleshortname', 'local_mass_enroll'),
         ];
         $defaults = [
             0 => 'idnumber',
