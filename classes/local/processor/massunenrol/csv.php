@@ -39,7 +39,6 @@ use local_mass_enroll\local\processor\csvbase;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv extends csvbase {
-
     /**
      * @var array
      */
@@ -61,10 +60,14 @@ class csv extends csvbase {
     protected function initialise_course() {
         parent::initialise_course();
         $extraenrolplugins = [];
-        foreach ($this->options->extramethods as $enrol) {
-            $extraenrolplugins[$enrol] = enrol_get_plugin($enrol);
+        if (is_array($this->options->extramethods)) {
+            foreach ($this->options->extramethods as $enrol) {
+                $extraenrolplugins[$enrol] = enrol_get_plugin($enrol);
+            }
+            $this->enrolmentinstances = mass_enroll_find_instances($this->course->id, array_keys($extraenrolplugins));
+        } else {
+            $this->enrolmentinstances = [];
         }
-        $this->enrolmentinstances = mass_enroll_find_instances($this->course->id, array_keys($extraenrolplugins));
     }
 
     /**
@@ -81,7 +84,7 @@ class csv extends csvbase {
         }
 
         // Trigger event.
-        $event = \local_mass_enroll\event\mass_enrolment_created::create([
+        $event = \local_mass_enroll\event\mass_unenrolment_created::create([
             'objectid' => $this->course->id,
             'courseid' => $this->course->id,
             'context' => $this->coursecontext,
@@ -94,9 +97,12 @@ class csv extends csvbase {
             $a->wwwroot = $CFG->wwwroot;
             $a->course = $this->course->fullname;
             $a->report = $this->compile_results();
-            email_to_user($USER, \core_user::get_noreply_user(),
-                    get_string('mail_unenrolment_subject', 'local_mass_enroll', $a),
-                    get_string('mail_unenrolment', 'local_mass_enroll', $a));
+            email_to_user(
+                $USER,
+                \core_user::get_noreply_user(),
+                get_string('mail_unenrolment_subject', 'local_mass_enroll', $a),
+                get_string('mail_unenrolment', 'local_mass_enroll', $a)
+            );
         }
     }
 
@@ -118,7 +124,8 @@ class csv extends csvbase {
         }
 
         if (!$user = $DB->get_record('user', $uparams)) {
-            $dataobject->error = get_string('im:user_unknown', 'local_mass_enroll', reset(array_values($uparams)));
+            $values = array_values($uparams);
+            $dataobject->error = get_string('im:user_unknown', 'local_mass_enroll', reset($values));
             return false;
         }
 
@@ -157,25 +164,24 @@ class csv extends csvbase {
 
         $result .= '<table>';
         $result .= '<tr>';
-        $result .= '<td>'.get_string('identifier', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('userid', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('userfullname', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('error', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('info', 'local_mass_enroll').'</td>';
+        $result .= '<td>' . get_string('identifier', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('userid', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('userfullname', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('error', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('info', 'local_mass_enroll') . '</td>';
         $result .= '</tr>';
         foreach ($this->results as $dataobj) {
             $dataobj->info = $dataobj->info ?? [];
             $result .= '<tr>';
-            $result .= '<td>'.($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '').'</td>';
-            $result .= '<td>'.($dataobj->userid ?? '').'</td>';
-            $result .= '<td>'.($dataobj->userfullname ?? '').'</td>';
-            $result .= '<td>'.($dataobj->error ?? '').'</td>';
-            $result .= '<td>'.implode('<br/>', $dataobj->info).'</td>';
+            $result .= '<td>' . ($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->userid ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->userfullname ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->error ?? '') . '</td>';
+            $result .= '<td>' . implode('<br/>', $dataobj->info) . '</td>';
             $result .= '</tr>';
         }
         $result .= '</table>';
 
         return $result;
     }
-
 }

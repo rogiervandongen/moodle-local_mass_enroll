@@ -64,12 +64,14 @@ if ($form->is_cancelled()) {
     switch ($redirectto) {
         case 'participant':
             redirect(new moodle_url('/user/index.php', ['id' => $id]));
+            break; // Useless break, but CI complains.
         case 'course':
         default:
             redirect(new moodle_url('/course/view.php', ['id' => $id]));
+            break; // Useless break, but CI complains.
     }
 }
-list($result, $displayreport) = $form->process();
+[$result, $displayreport] = $form->process();
 
 if ($result) {
     \core\notification::success(get_string('process:massenrol:success', 'local_mass_enroll'));
@@ -84,8 +86,13 @@ if ($result) {
 } else {
     echo $renderer->header();
     echo $renderer->get_tabs($context, 'massenrol', ['id' => $course->id]);
-    echo $renderer->heading_with_help($strinscriptions, 'mass_enroll', 'local_mass_enroll',
-                'icon', get_string('mass_enroll', 'local_mass_enroll'));
+    echo $renderer->heading_with_help(
+        $strinscriptions,
+        'mass_enroll',
+        'local_mass_enroll',
+        'icon',
+        get_string('mass_enroll', 'local_mass_enroll')
+    );
     echo $renderer->box(get_string('mass_enroll_info', 'local_mass_enroll'), 'center');
     echo $form->render();
     echo $renderer->footer();

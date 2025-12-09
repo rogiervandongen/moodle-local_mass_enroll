@@ -47,7 +47,6 @@ namespace local_mass_enroll\event;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 class mass_unenrolment_created extends \core\event\base {
-
     /**
      * Override in subclass.
      *
@@ -112,5 +111,4 @@ class mass_unenrolment_created extends \core\event\base {
             throw new \coding_exception('The \'info\' field must be set in \'other\'.');
         }
     }
-
 }

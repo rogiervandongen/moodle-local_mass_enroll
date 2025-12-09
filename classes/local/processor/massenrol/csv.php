@@ -39,7 +39,6 @@ use local_mass_enroll\local\processor\csvbase;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv extends csvbase {
-
     /**
      * @var array
      */
@@ -113,12 +112,12 @@ class csv extends csvbase {
         }
 
         // Trigger event.
-        $event = \local_mass_enroll\event\mass_unenrolment_created::create([
-                'objectid' => $this->course->id,
-                'courseid' => $this->course->id,
-                'context' => $this->coursecontext,
-                'other' => ['info' => get_string('mass_unenroll', 'local_mass_enroll')],
-            ]);
+        $event = \local_mass_enroll\event\mass_enrolment_created::create([
+            'objectid' => $this->course->id,
+            'courseid' => $this->course->id,
+            'context' => $this->coursecontext,
+            'other' => ['info' => get_string('mass_unenroll', 'local_mass_enroll')],
+        ]);
         $event->trigger();
 
         if ($this->mailreport) {
@@ -126,9 +125,12 @@ class csv extends csvbase {
             $a->wwwroot = $CFG->wwwroot;
             $a->course = $this->course->fullname;
             $a->report = $this->compile_results();
-            email_to_user($USER, \core_user::get_noreply_user(),
-                    get_string('mail_enrolment_subject', 'local_mass_enroll', $a),
-                    get_string('mail_enrolment', 'local_mass_enroll', $a));
+            email_to_user(
+                $USER,
+                \core_user::get_noreply_user(),
+                get_string('mail_enrolment_subject', 'local_mass_enroll', $a),
+                get_string('mail_enrolment', 'local_mass_enroll', $a)
+            );
         }
     }
 
@@ -307,31 +309,30 @@ class csv extends csvbase {
 
         $result .= '<table class="table">';
         $result .= '<tr>';
-        $result .= '<td>'.get_string('identifier', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('userid', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('userfullname', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('role', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('group').'</td>';
-        $result .= '<td>'.get_string('grouping', 'group').'</td>';
-        $result .= '<td>'.get_string('error', 'local_mass_enroll').'</td>';
-        $result .= '<td>'.get_string('info', 'local_mass_enroll').'</td>';
+        $result .= '<td>' . get_string('identifier', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('userid', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('userfullname', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('role', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('group') . '</td>';
+        $result .= '<td>' . get_string('grouping', 'group') . '</td>';
+        $result .= '<td>' . get_string('error', 'local_mass_enroll') . '</td>';
+        $result .= '<td>' . get_string('info', 'local_mass_enroll') . '</td>';
         $result .= '</tr>';
         foreach ($this->results as $dataobj) {
             $dataobj->info = $dataobj->info ?? [];
             $result .= '<tr>';
-            $result .= '<td>'.($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '').'</td>';
-            $result .= '<td>'.($dataobj->userid ?? '').'</td>';
-            $result .= '<td>'.($dataobj->userfullname ?? '').'</td>';
-            $result .= '<td>'.($dataobj->role ?? '').'</td>';
-            $result .= '<td>'.($dataobj->group ?? '').'</td>';
-            $result .= '<td>'.($dataobj->grouping ?? '').'</td>';
-            $result .= '<td>'.($dataobj->error ?? '').'</td>';
-            $result .= '<td>'.implode('<br/>', $dataobj->info).'</td>';
+            $result .= '<td>' . ($dataobj->username ?? $dataobj->idnumber ?? $dataobj->email ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->userid ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->userfullname ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->role ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->group ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->grouping ?? '') . '</td>';
+            $result .= '<td>' . ($dataobj->error ?? '') . '</td>';
+            $result .= '<td>' .  implode('<br/>', $dataobj->info) . '</td>';
             $result .= '</tr>';
         }
         $result .= '</table>';
 
         return $result;
     }
-
 }

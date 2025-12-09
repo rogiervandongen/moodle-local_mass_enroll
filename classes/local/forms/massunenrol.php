@@ -38,7 +38,6 @@ namespace local_mass_enroll\local\forms;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class massunenrol extends base {
-
     /**
      * Form definition
      */
@@ -134,5 +133,4 @@ class massunenrol extends base {
         }
         return $mappings;
     }
-
 }

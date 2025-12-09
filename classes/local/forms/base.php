@@ -46,7 +46,6 @@ require_once($CFG->dirroot . '/local/mass_enroll/lib.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base extends \moodleform {
-
     /**
      * @var \stdClass
      */
@@ -101,13 +100,21 @@ abstract class base extends \moodleform {
     protected function add_enrolment_methods_element() {
         $methods = local_mass_enroll_get_course_enrolment_methods($this->_customdata['course']->id);
         if (!empty($methods) && $this->config->enableextraunenrolmentplugins) {
-            $this->_form->addElement('advcheckbox', 'addextraenrolments',
-                    get_string('enableextraunenrolmentplugins', 'local_mass_enroll'));
+            $this->_form->addElement(
+                'advcheckbox',
+                'addextraenrolments',
+                get_string('enableextraunenrolmentplugins', 'local_mass_enroll')
+            );
             $this->_form->setDefault('addextraenrolments', 0);
             $this->_form->addHelpButton('addextraenrolments', 'enableextraunenrolmentplugins', 'local_mass_enroll');
 
-            $emel = $this->_form->addElement('select', 'extramethods', get_string('allowedunenrolmentmethods', 'local_mass_enroll'),
-                    $methods, ['size' => min(10, max(1, count($methods)))]);
+            $emel = $this->_form->addElement(
+                'select',
+                'extramethods',
+                get_string('allowedunenrolmentmethods', 'local_mass_enroll'),
+                $methods,
+                ['size' => min(10, max(1, count($methods)))]
+            );
             $emel->setMultiple(true);
             $this->_form->setDefault('extramethods', explode(',', $this->config->allowedunenrolmentmethods));
             $this->_form->addHelpButton('extramethods', 'allowedunenrolmentmethods', 'local_mass_enroll');
@@ -145,5 +152,4 @@ abstract class base extends \moodleform {
             $this->_form->setDefault($mappingname, $defaults[$i]);
         }
     }
-
 }

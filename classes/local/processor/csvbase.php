@@ -44,7 +44,6 @@ require_once($CFG->dirroot . '/group/lib.php');
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class csvbase {
-
     /**
      * @var string
      */
@@ -208,12 +207,19 @@ abstract class csvbase {
      */
     protected function initialise_course() {
         global $DB;
-        $this->coursegroups = $DB->get_records_sql_menu('SELECT name, id FROM {groups} WHERE courseid = ?',
-                [$this->course->id]);
-        $this->coursegroupings = $DB->get_records_sql_menu('SELECT name, id FROM {groupings} WHERE courseid = ?',
-                [$this->course->id]);
+        $this->coursegroups = $DB->get_records_sql_menu(
+            'SELECT name, id FROM {groups} WHERE courseid = ?',
+            [$this->course->id]
+        );
+        $this->coursegroupings = $DB->get_records_sql_menu(
+            'SELECT name, id FROM {groupings} WHERE courseid = ?',
+            [$this->course->id]
+        );
         $this->enrolplugin = enrol_get_plugin('manual');
-        $this->enrolinstance = $DB->get_record('enrol', ['courseid' => $this->course->id, 'enrol' => 'manual']);
+        $this->enrolinstance = $DB->get_record(
+            'enrol',
+            ['courseid' => $this->course->id, 'enrol' => 'manual']
+        );
     }
 
     /**
@@ -242,8 +248,14 @@ abstract class csvbase {
 
         // Let CSV importer read.
         $validator = null;
-        if (!$this->importer->load_csv_content($text, $this->options['encoding'],
-                $this->options['delimitername'], $validator, $this->options['enclosure'])) {
+        $loaded = $this->importer->load_csv_content(
+            $text,
+            $this->options['encoding'],
+            $this->options['delimitername'],
+            $validator,
+            $this->options['enclosure']
+        );
+        if (!$loaded) {
             $this->fail(get_string('invalidimportfile', 'tool_lpimportcsv'));
             $this->fail($this->importer->get_error());
             $this->importer->cleanup();
@@ -296,5 +308,4 @@ abstract class csvbase {
      * @return bool
      */
     abstract protected function process_user(&$dataobject): bool;
-
 }
