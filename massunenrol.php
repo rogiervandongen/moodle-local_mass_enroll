@@ -70,11 +70,20 @@ if ($form->is_cancelled()) {
             break; // Useless break, but CI complains.
     }
 }
-[$result, $displayreport] = $form->process();
+[$result, $displayreport, $hasfailed] = $form->process();
 
-if ($result) {
+if (!$result && $hasfailed) {
+    \core\notification::error(get_string('process:massunenrol:fail', 'local_mass_enroll'));
+    echo $renderer->header();
+    echo $renderer->get_tabs($context, 'massunenrol', ['id' => $course->id]);
+    echo $renderer->heading(get_string('process:massunenrol:fail', 'local_mass_enroll'), 2);
+    echo $renderer->box($displayreport, 'center');
+    echo '<p class="mt-2"><a class="btn btn-primary" href="' .
+            (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false) .
+            '">' . get_string('continue') . '</a></p>';
+    echo $renderer->footer();
+} else if ($result) {
     \core\notification::success(get_string('process:massunenrol:success', 'local_mass_enroll'));
-    \core\notification::success(get_string('process:massenrol:success', 'local_mass_enroll'));
     echo $renderer->header();
     echo $renderer->get_tabs($context, 'massunenrol', ['id' => $course->id]);
     echo $renderer->heading(get_string('csvresulttable', 'local_mass_enroll'), 2);

@@ -128,9 +128,14 @@ class massenrol extends base {
         $csvprocessor->set_mailreport((bool)$data->mailreport);
 
         $result = $csvprocessor->process();
-        $displayreport = $csvprocessor->compile_results();
+        $hasfailed = $csvprocessor->has_failed();
+        if (!$result && $hasfailed) {
+            $displayreport = $csvprocessor->compile_errors();
+        } else {
+            $displayreport = $csvprocessor->compile_results();
+        }
 
-        return [$result, $displayreport];
+        return [$result, $displayreport, $hasfailed];
     }
 
     /**

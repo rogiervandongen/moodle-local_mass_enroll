@@ -223,6 +223,38 @@ abstract class csvbase {
     }
 
     /**
+     * Add failure message.
+     *
+     * @param string $error
+     */
+    protected function fail($error) {
+        $this->errors[] = $error;
+    }
+
+    /**
+     * Has processor failed?
+     *
+     * @return bool
+     */
+    public function has_failed() {
+        return !empty($this->errors);
+    }
+
+    /**
+     * Has processor failed?
+     *
+     * @return bool
+     */
+    public function compile_errors() {
+        $str = '<ul>';
+        foreach ($this->errors as $error) {
+            $str .= '<li>' . $error . '</li>';
+        }
+        $str .= '</ul>';
+        return $str;
+    }
+
+    /**
      * Process CSV.
      *
      * @return void
@@ -259,13 +291,13 @@ abstract class csvbase {
             $this->fail(get_string('invalidimportfile', 'tool_lpimportcsv'));
             $this->fail($this->importer->get_error());
             $this->importer->cleanup();
-            return;
+            return false;
         }
 
         if (!$this->importer->init()) {
             $this->fail(get_string('invalidimportfile', 'tool_lpimportcsv'));
             $this->importer->cleanup();
-            return;
+            return false;
         }
 
         if ($this->testrun) {

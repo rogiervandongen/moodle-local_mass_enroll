@@ -1,3 +1,8 @@
+Version 4.2.2 (build 2026012800)
+* Fix #26 (and implement fail())
+
+-----
+
 Version 4.2.1 (build 2025120100)
 * Make CI happier
 * Fixed events (unenrol triggered enrolled event and vice versa)
