@@ -60,8 +60,8 @@ class csv extends csvbase {
     protected function initialise_course() {
         parent::initialise_course();
         $extraenrolplugins = [];
-        if (is_array($this->options->extramethods)) {
-            foreach ($this->options->extramethods as $enrol) {
+        if (is_array($this->options['extramethods'])) {
+            foreach ($this->options['extramethods'] as $enrol) {
                 $extraenrolplugins[$enrol] = enrol_get_plugin($enrol);
             }
             $this->enrolmentinstances = mass_enroll_find_instances($this->course->id, array_keys($extraenrolplugins));
