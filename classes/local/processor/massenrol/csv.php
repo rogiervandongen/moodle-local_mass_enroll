@@ -152,7 +152,8 @@ class csv extends csvbase {
         }
 
         if (!$user = $DB->get_record('user', $uparams, '*', IGNORE_MULTIPLE)) {
-            $dataobject->error = get_string('im:user_unknown', 'local_mass_enroll', reset(array_values($uparams)));
+            $userparamvalues = array_values($uparams);
+            $dataobject->error = get_string('im:user_unknown', 'local_mass_enroll', reset($userparamvalues));
             return false;
         }
 
