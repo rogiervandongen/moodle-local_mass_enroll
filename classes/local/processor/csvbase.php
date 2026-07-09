@@ -88,6 +88,14 @@ abstract class csvbase {
      */
     protected $coursecontext;
     /**
+     * @var stdClass
+     */
+    protected $coursegroups;
+    /**
+     * @var stdClass
+     */
+    protected $coursegroupings;    
+    /**
      * @var \enrol_plugin
      */
     protected $enrolplugin;
